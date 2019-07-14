@@ -2,7 +2,6 @@ import json
 import threading
 import copy
 
-from securenative.errors import MissingApiKeyError
 from securenative.http_client import HttpClient
 from securenative.sdk_options import SecureNativeOptions
 
@@ -16,7 +15,7 @@ class QueueItem:
 class EventManager:
     def __init__(self, api_key, options=SecureNativeOptions(), http_client=HttpClient()):
         if api_key is None:
-            raise MissingApiKeyError()
+            raise ValueError('API key cannot be None, please get your API key from SecureNative console.')
 
         self.http_client = http_client
         self.api_key = api_key

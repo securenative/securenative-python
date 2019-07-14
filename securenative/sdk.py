@@ -1,7 +1,6 @@
 import json
 
-from securenative.config import _max_allowed_params
-from securenative.errors import MissingApiKeyError
+from config import _max_allowed_params
 from securenative.event_manager import EventManager
 from securenative.sdk_options import SecureNativeOptions
 from securenative.utils import verify_signature
@@ -10,7 +9,7 @@ from securenative.utils import verify_signature
 class SecureNative:
     def __init__(self, api_key, options=SecureNativeOptions()):
         if api_key is None:
-            raise MissingApiKeyError()
+            raise ValueError('API key cannot be None, please get your API key from SecureNative console.')
 
         self._api_key = api_key
         self._options = options
