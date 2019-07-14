@@ -1,6 +1,6 @@
 import requests
 
-from securenative.config import sdk_version
+from config import sdk_version
 
 
 class HttpClient:

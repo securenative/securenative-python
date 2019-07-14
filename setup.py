@@ -1,17 +1,17 @@
 from distutils.core import setup
 
-from securenative.config import sdk_version
+from config import sdk_version
 
 setup(
-    name='securenative-sdk',
-    packages=['securenative-sdk'],
+    name='securenative',
+    packages=['securenative'],
     version=sdk_version,
     license='MIT',
     description='Secure Native SDK for python',
     author='Secure Native',
     author_email='support@securenative.com',
     url='http://www.securenative.com',
-    download_url='https://github.com/user/reponame/archive/v_01.tar.gz',  # I explain this later on
+    download_url='https://github.com/securenative/securenative-python/archive/0.1.tar.gz',
     keywords=["securenative", 'cyber-security'],
     install_requires=[
         "requests",
