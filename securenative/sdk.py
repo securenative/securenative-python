@@ -36,5 +36,6 @@ class SecureNative:
 
 
 def _validate_event(event):
-    if len(event.params) > _max_allowed_params:
-        event.params = event.params[:_max_allowed_params]
+    if event.params is not None:
+        if len(event.params) > _max_allowed_params:
+            event.params = event.params[:_max_allowed_params]

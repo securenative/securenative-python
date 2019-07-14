@@ -34,6 +34,9 @@ class Event:
 
         self.params = params
 
+        if self.params is None:
+            self.params = list()
+
         if sn_cookie_value is not None:
             self.cid, self.fp = _parse_cookie(sn_cookie_value)
 
