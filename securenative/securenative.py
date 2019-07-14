@@ -12,17 +12,17 @@ class SecureNative:
         if api_key is None:
             raise MissingApiKeyError()
 
-        self.api_key = api_key
-        self.options = options
-        self.event_manager = EventManager(self.api_key, self.options)
+        self._api_key = api_key
+        self._options = options
+        self._event_manager = EventManager(self._api_key, self._options)
 
     def track(self, event):
         _validate_event(event)
-        self.event_manager.send_async(event, 'collector/api/v1/track')
+        self._event_manager.send_async(event, 'collector/api/v1/track')
 
     def verify(self, event):
         _validate_event(event)
-        response = self.event_manager.send_sync(event, 'collector/api/v1/verify')
+        response = self._event_manager.send_sync(event, 'collector/api/v1/verify')
         if response.status_code == 200:
             json_result = json.loads(response.text)
             return json_result
@@ -30,10 +30,10 @@ class SecureNative:
             return None
 
     def verify_webhook(self, hmac_header, body):
-        return verify_signature(self.api_key, body, hmac_header)
+        return verify_signature(self._api_key, body, hmac_header)
 
     def flush(self):
-        self.event_manager.flush()
+        self._event_manager.flush()
 
 
 def _validate_event(event):

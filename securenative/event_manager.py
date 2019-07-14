@@ -30,7 +30,7 @@ class EventManager:
     def send_async(self, event, resource_path):
         item = QueueItem(
             self._build_url(resource_path),
-            json.dumps(event)
+            json.dumps(event.as_dict())
         )
 
         self.queue.insert(0, item)
@@ -48,7 +48,7 @@ class EventManager:
         return self.http_client.post(
             self._build_url(resources_path),
             self.api_key,
-            json.dumps(event)
+            json.dumps(event.as_dict())
         )
 
     def _build_url(self, resource_path):

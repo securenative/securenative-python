@@ -8,9 +8,9 @@ class HttpClient:
         return {
             'Content-Type': 'application/json',
             'User-Agent': 'SecureNative-python',
-            'SN-Version': sdk_version,
+            'Sn-Version': sdk_version,
             'Authorization': api_key
         }
 
     def post(self, url, api_key, body):
-        return requests.post(url=url, body=body, headers=self._headers(api_key))
+        return requests.post(url=url, data=body, headers=self._headers(api_key))

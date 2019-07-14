@@ -20,16 +20,44 @@ class Event:
         self.ip = ip
         self.user_agent = user_agent
         self.params = params
-        if params is None:
-            params = list()
-        if isinstance(params, list):
-            raise ValueError('custom params should be a list of CustomParams, i.e: [CustomParams(key, value), ...])')
+        self.cid = ''
+        self.fp = ''
+        self.params = list()
+
+        if params is not None:
+            if not isinstance(params, list):
+                raise ValueError(
+                    'custom params should be a list of CustomParams, i.e: [CustomParams(key, value), ...])')
+            if len(params) > 0 and not isinstance(params[0], CustomParam):
+                raise ValueError(
+                    'custom params should be a list of CustomParams, i.e: [CustomParams(key, value), ...])')
+
+        self.params = params
 
         if sn_cookie_value is not None:
             self.cid, self.fp = _parse_cookie(sn_cookie_value)
 
-        self.vid = uuid.uuid1()
-        self.ts = time.time() * 1000
+        self.vid = str(uuid.uuid4())
+        self.ts = int(time.time())*1000
+
+    def as_dict(self):
+        return {
+            "eventType": self.event_type,
+            "user": {
+                "id": self.user.user_id,
+                "email": self.user.user_email,
+                "name": self.user.user_name
+            },
+            "remoteIP": self.remote_ip,
+            "ip": self.ip,
+            "cid": self.cid,
+            "fp": self.fp,
+            "ts": self.ts,
+            "vid": self.vid,
+            "userAgent": self.user_agent,
+            "device": {},
+            "params": [{p.key: p.value} for p in self.params]
+        }
 
 
 class CustomParam:
