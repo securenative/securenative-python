@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from config import sdk_version
+from securenative.config import sdk_version
 from securenative.http_client import HttpClient
 
 

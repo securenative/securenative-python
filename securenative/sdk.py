@@ -1,6 +1,6 @@
 import json
 
-from config import _max_allowed_params
+from securenative.config import _max_allowed_params
 from securenative.event_manager import EventManager
 from securenative.sdk_options import SecureNativeOptions
 from securenative.utils import verify_signature

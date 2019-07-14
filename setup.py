@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-from config import sdk_version
+from securenative.config import sdk_version
 
 setup(
     name='securenative',
