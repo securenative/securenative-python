@@ -3,7 +3,7 @@
 ## How to get it?
 the python SDK is published to PyPi so you can just use `pip` to install it:
 ```bash
-pip install securenative-sdk
+pip install securenative
 ```
 
 ## Initialize the SDK
