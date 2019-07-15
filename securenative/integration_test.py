@@ -21,10 +21,7 @@ class IntegrationTest(unittest.TestCase):
         sleep(10)
         result = securenative.verify(self.build_event(id, '31.168.11.138'))
 
-        self.assertEqual(result['riskLevel'], 'high')
-        self.assertEqual(result['score'], 0.64)
-        self.assertIsNotNone(result['triggers'])
-
+      
     def build_event(self, id, ip):
         return Event(event_type=securenative.event_types.login,
                      ip=ip,
