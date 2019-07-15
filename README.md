@@ -13,7 +13,7 @@ import securenative
 
 # Many lines of code ...
 
-if __name__=='main':
+if __name__=='__main__':
     # Your bootstrap code
     securenative.init('API_KEY') # Should be called before any other call to secure native
 ```
@@ -53,14 +53,13 @@ Once the SDK has been initialized, you can protect sensitive operation by callin
 
 ```python
 import securenative
-from securenative.event_types import login
 from securenative.event_options import Event, User
 
 def my_change_password_function():
     # Many lines of code...
     
     event = Event( # Build the event from the request's context
-            event_type=login,
+            event_type='',
             ip='35.199.23.1',
             remote_ip='35.199.23.2',
             user_agent='Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile Safari/537.36',
