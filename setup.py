@@ -1,6 +1,9 @@
-from distutils.core import setup
+from setuptools import setup, Extension
 
 from securenative.config import sdk_version
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 setup(
     name='securenative',
@@ -13,6 +16,8 @@ setup(
     url='http://www.securenative.com',
     download_url='https://github.com/securenative/securenative-python/archive/0.1.tar.gz',
     keywords=["securenative", 'cyber-security'],
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     install_requires=[
         "requests",
     ],

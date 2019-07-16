@@ -22,14 +22,13 @@ if __name__=='__main__':
 Once the SDK has been initialized, you can start sending new events with the `track` function:
 ```python
 import securenative
-from securenative.event_types import login
 from securenative.event_options import Event, User
 
 def my_login_function():
     # Many lines of code ...
     
     event = Event( # Build the event from the request's context
-        event_type=login,
+        event_type=securenative.event_types.login,
         ip='35.199.23.1',
         remote_ip='35.199.23.2',
         user_agent='Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile Safari/537.36',
@@ -59,7 +58,7 @@ def my_change_password_function():
     # Many lines of code...
     
     event = Event( # Build the event from the request's context
-            event_type='',
+            event_type=securenative.event_types.verify,
             ip='35.199.23.1',
             remote_ip='35.199.23.2',
             user_agent='Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile Safari/537.36',
