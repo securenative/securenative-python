@@ -21,18 +21,32 @@ class SecureNative:
 
     def verify(self, event):
         _validate_event(event)
-        response = self._event_manager.send_sync(event, 'collector/api/v1/verify')
-        if response.status_code == 200:
-            json_result = json.loads(response.text)
-            return json_result
-        else:
-            return None
+
+        try:
+            response = self._event_manager.send_sync(event, 'collector/api/v1/verify')
+
+            if response.status_code == 200:
+                json_result = json.loads(response.text)
+                return json_result
+            else:
+                return _default_verify_result()
+
+        except Exception as ex:
+            return _default_verify_result
 
     def verify_webhook(self, hmac_header, body):
         return verify_signature(self._api_key, body, hmac_header)
 
     def flush(self):
         self._event_manager.flush()
+
+
+def _default_verify_result():
+    result = dict()
+    result['riskLevel'] = u'high'
+    result['score'] = 0
+    result['triggers'] = []
+    return result
 
 
 def _validate_event(event):
