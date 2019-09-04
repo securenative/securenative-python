@@ -43,7 +43,7 @@ class SecureNative:
 
 def _default_verify_result():
     result = dict()
-    result['riskLevel'] = u'high'
+    result['riskLevel'] = u'low'
     result['score'] = 0
     result['triggers'] = []
     return result

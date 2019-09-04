@@ -28,6 +28,6 @@ class IntegrationTest(unittest.TestCase):
     def build_event(self, id, type, ip):
         return Event(event_type=type,
                      ip=ip,
-                     user=User(user_id=id, user_email='python-sdk@securenative.com', user_name='python sdk'),
-                     params=[CustomParam('key', 'val')]
+                     user=User(user_id=id, user_email='python-sdk@securenative.com', user_name='python sdk')
+                     # params=[CustomParam('key', 'val')]
                      )
