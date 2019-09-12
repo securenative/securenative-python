@@ -2,6 +2,7 @@ import json
 
 from securenative.config import _max_allowed_params
 from securenative.event_manager import EventManager
+from securenative.logger import sn_logging
 from securenative.sdk_options import SecureNativeOptions
 from securenative.utils import verify_signature
 
@@ -14,12 +15,21 @@ class SecureNative:
         self._api_key = api_key
         self._options = options
         self._event_manager = EventManager(self._api_key, self._options)
+        if self._options and self._options.debug_mode:
+            enable_sn_logging = self._options.debug_mode
+            sn_logging("sn logging was activated")
 
     def track(self, event):
+        sn_logging("Track event call")
+        if not self._options.is_sdk_enabled:
+            return
         _validate_event(event)
         self._event_manager.send_async(event, 'collector/api/v1/track')
 
     def verify(self, event):
+        sn_logging("Verify event call")
+        if not self._options.is_sdk_enabled:
+            return _default_verify_result()
         _validate_event(event)
 
         try:
@@ -31,10 +41,11 @@ class SecureNative:
             else:
                 return _default_verify_result()
 
-        except Exception as ex:
+        except Exception:
             return _default_verify_result
 
     def verify_webhook(self, hmac_header, body):
+        sn_logging("Verify webhook was called")
         return verify_signature(self._api_key, body, hmac_header)
 
     def flush(self):
@@ -43,7 +54,7 @@ class SecureNative:
 
 def _default_verify_result():
     result = dict()
-    result['riskLevel'] = u'high'
+    result['riskLevel'] = u'low'
     result['score'] = 0
     result['triggers'] = []
     return result

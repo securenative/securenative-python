@@ -5,14 +5,14 @@ import unittest
 
 from securenative import Event, event_types
 from securenative.event_manager import EventManager
-from securenative.event_options import User, CustomParam
+from securenative.event_options import User
 
 
 class EventManagerTests(unittest.TestCase):
 
     def build_event(self):
         return Event(event_type=event_types.login, user=User(user_id='1', user_email='1@2.com', user_name='1 2'),
-                     params=[CustomParam('key', 'val')])
+                     params={'key': 'val'})
 
     def test_send_sync(self):
         api_key = 'key'
@@ -35,7 +35,7 @@ class EventManagerTests(unittest.TestCase):
 
         manager = EventManager(api_key=api_key, http_client=client)
         manager.send_async(event, resource)
-        self.assertTrue(wg.wait(manager.options.interval//1000 * 2))
+        self.assertTrue(wg.wait(manager.options.interval // 1000 * 2))
 
     def assert_cb(self, wg, event, url, key, body):
         self.assertEqual(url, 'https://api.securenative.com/my/custom/resource')

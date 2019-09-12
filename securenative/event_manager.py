@@ -22,7 +22,7 @@ class EventManager:
         self.options = options
         self.queue = list()
 
-        if self.options.auto_send:
+        if self.options.auto_send and self.options.is_sdk_enabled:
             interval_seconds = max(options.interval // 1000, 1)
             threading.Timer(interval_seconds, self.flush).start()
 

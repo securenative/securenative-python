@@ -1,3 +1,5 @@
+import securenative
+from securenative.logger import sn_logging
 from securenative.sdk import SecureNative
 from securenative.sdk_options import SecureNativeOptions
 
@@ -8,6 +10,11 @@ def init(api_key, options=SecureNativeOptions()):
     global _sn_sdk
     if _sn_sdk is None:
         _sn_sdk = SecureNative(api_key, options)
+        securenative.logger.enable_sn_logging = options.debug_mode
+    else:
+        sn_logging('This SDK was already initialized.')
+        raise ValueError(
+            u'This SDK was already initialized.')
 
 
 def track(event):
