@@ -3,7 +3,6 @@ from Crypto import Random
 from binascii import unhexlify, hexlify
 
 BLOCK_SIZE = 16
-pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
 
 
 def encrypt(text, cipherKey):
@@ -19,3 +18,7 @@ def decrypt(encrypted, cipherKey):
     cipherText = content[BLOCK_SIZE:]
     aes = AES.new(cipherKey, AES.MODE_CBC, iv)
     return aes.decrypt(cipherText).decode('utf-8').strip()
+
+
+def pad(s):
+    return s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)

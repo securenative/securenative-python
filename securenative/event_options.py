@@ -13,7 +13,7 @@ class User:
 
 class Event:
     def __init__(self, event_type, user=User(), ip=u'127.0.0.1', remote_ip=u'127.0.0.1', user_agent=u'unknown',
-                 sn_cookie_value=None, params=None):
+                 sn_cookie_value=None, params={}):
         self.event_type = event_type
         self.user = user
         self.remote_ip = remote_ip
@@ -22,20 +22,9 @@ class Event:
         self.params = params
         self.cid = ''
         self.fp = ''
-        self.params = list()
-
-        if params is not None:
-            if not isinstance(params, list):
-                raise ValueError(
-                    'custom params should be a list of CustomParams, i.e: [CustomParams(key, value), ...])')
-            if len(params) > 0 and not isinstance(params[0], CustomParam):
-                raise ValueError(
-                    'custom params should be a list of CustomParams, i.e: [CustomParams(key, value), ...])')
-
-        self.params = params
 
         if self.params is None:
-            self.params = list()
+            self.params = {}
 
         if sn_cookie_value is not None:
             self.cid, self.fp = _parse_cookie(sn_cookie_value)
@@ -59,11 +48,5 @@ class Event:
             "vid": self.vid,
             "userAgent": self.user_agent,
             "device": {},
-            "params": [{p.key: p.value} for p in self.params]
+            "params": self.params
         }
-
-
-class CustomParam:
-    def __init__(self, key, value):
-        self.key = key
-        self.value = value
