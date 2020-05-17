@@ -2,7 +2,7 @@ import json
 import unittest
 
 from securenative.config import sdk_version
-from securenative.http_client import HttpClient
+from securenative.http.http_client import HttpClient
 
 
 class HttpClientTests(unittest.TestCase):

@@ -1,7 +1,10 @@
-class SecurenativeOptions(object):
+from securenative.enums.failover_strategy import FailOverStrategy
 
-    def __init__(self, api_key, api_url, interval, max_events, timeout, auto_send,
-                 disable, log_level, fail_over_strategy):
+
+class SecureNativeOptions(object):
+
+    def __init__(self, api_key=None, api_url=None, interval=1000, max_events=1000, timeout=1500, auto_send=True,
+                 disable=False, log_level="CRITICAL", fail_over_strategy=FailOverStrategy.FAIL_OPEN):
         self.api_key = api_key
         self.api_url = api_url
         self.interval = interval

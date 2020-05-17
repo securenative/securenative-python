@@ -2,7 +2,7 @@ import json
 import threading
 import copy
 
-from securenative.http_client import HttpClient
+from securenative.http.http_client import HttpClient
 from securenative.sdk_options import SecureNativeOptions
 
 

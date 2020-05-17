@@ -9,7 +9,7 @@ class ConfigurationManager(object):
     CUSTOM_CONFIG_FILE_ENV_NAME = "SECURENATIVE_COMFIG_FILE"
     config = ConfigParser.ConfigParser()
 
-    @staticmethod
+    @classmethod
     def read_resource_file(cls, resource_path):
         cls.config.read(resource_path)
         sections = cls.config.sections()
@@ -25,7 +25,7 @@ class ConfigurationManager(object):
 
         return properties
 
-    @staticmethod
+    @classmethod
     def _get_resource_path(cls, env_name):
         env_value = os.environ.get(env_name)
 
@@ -38,7 +38,13 @@ class ConfigurationManager(object):
     def config_builder():
         return ConfigurationBuilder.default_config_builder()
 
-    @staticmethod
+    @classmethod
+    def _get_env_or_default(cls, properties, key, default):
+        if properties[key]:
+            return properties[key]
+        return default
+
+    @classmethod
     def load_config(cls):
         builder = ConfigurationBuilder()
         options = builder.get_default_securenative_options()

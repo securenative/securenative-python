@@ -1,6 +1,6 @@
 import unittest
 
-from securenative.sn_crypto import encrypt, decrypt
+from securenative.utils.sn_crypto import encrypt, decrypt
 
 
 class CryptoTests(unittest.TestCase):

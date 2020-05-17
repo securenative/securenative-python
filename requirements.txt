@@ -1,2 +1,4 @@
 requests~=2.23.0
 pycrypto~=2.6.1
+aiohttp~=3.6.2
+crypto~=1.4.1

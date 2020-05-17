@@ -1,11 +1,11 @@
-from securenative.config.securenative_options import SecurenativeOptions
+from securenative.config.securenative_options import SecureNativeOptions
 from securenative.enums.failover_strategy import FailOverStrategy
 
 
 class ConfigurationBuilder(object):
 
     def __init__(self):
-        self.api_key = ""
+        self.api_key = None
         self.api_url = "https://api.securenative.com/collector/api/v1"
         self.interval = 1000
         self.max_events = 1000
@@ -57,5 +57,4 @@ class ConfigurationBuilder(object):
 
     @staticmethod
     def get_default_securenative_options():
-        return SecurenativeOptions("", "https://api.securenative.com/collector/api/v1", 1000,
-                                   1000, 1500, True, False, "CRITICAL", FailOverStrategy.FAIL_OPEN)
+        return SecureNativeOptions()
