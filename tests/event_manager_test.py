@@ -8,17 +8,18 @@ from securenative.event_manager import EventManager
 from securenative.event_options import User
 
 
-class EventManagerTests(unittest.TestCase):
+def build_event():
+    return Event(event_type=event_types.login, user=User(user_id='1', user_email='1@2.com', user_name='1 2'),
+                 params={'key': 'val'})
 
-    def build_event(self):
-        return Event(event_type=event_types.login, user=User(user_id='1', user_email='1@2.com', user_name='1 2'),
-                     params={'key': 'val'})
+
+class EventManagerTests(unittest.TestCase):
 
     def test_send_sync(self):
         api_key = 'key'
         resource = 'my/custom/resource'
         client = HttpClientMock(None)
-        event = self.build_event()
+        event = build_event()
         manager = EventManager(api_key=api_key, http_client=client)
         url, key, body = manager.send_sync(event, resource)
 
@@ -30,7 +31,7 @@ class EventManagerTests(unittest.TestCase):
         wg = threading.Event()
         api_key = 'key'
         resource = 'my/custom/resource'
-        event = self.build_event()
+        event = build_event()
         client = HttpClientMock(functools.partial(self.assert_cb, wg, event))
 
         manager = EventManager(api_key=api_key, http_client=client)

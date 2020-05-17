@@ -1,6 +1,6 @@
 import unittest
 
-from securenative.utils import _parse_cookie, verify_signature
+from securenative.utils.utils import _parse_cookie, verify_signature
 
 
 class UtilsTest(unittest.TestCase):

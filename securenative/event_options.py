@@ -1,7 +1,7 @@
 import uuid
 import time
 
-from securenative.utils import _parse_cookie
+from securenative.utils.utils import _parse_cookie
 
 
 class User:
@@ -30,7 +30,7 @@ class Event:
             self.cid, self.fp = _parse_cookie(sn_cookie_value)
 
         self.vid = str(uuid.uuid4())
-        self.ts = int(time.time())*1000
+        self.ts = int(time.time()) * 1000
 
     def as_dict(self):
         return {

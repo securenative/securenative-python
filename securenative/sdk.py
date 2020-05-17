@@ -4,7 +4,7 @@ from securenative.config import _max_allowed_params
 from securenative.event_manager import EventManager
 from securenative.logger import sn_logging
 from securenative.sdk_options import SecureNativeOptions
-from securenative.utils import verify_signature
+from securenative.utils.utils import verify_signature
 
 
 class SecureNative:
