@@ -1,4 +1,6 @@
 from securenative.context.securenative_context import SecureNativeContext
+from securenative.utils.request_utils import RequestUtils
+from securenative.utils.utils import Utils
 
 
 class ContextBuilder(object):
@@ -38,8 +40,22 @@ class ContextBuilder(object):
     def default_context_builder():
         return ContextBuilder()
 
-    def from_http_request(self, request):  # TODO!
-        pass
+    @staticmethod
+    def from_http_request(request):
+        headers = request.headers
+
+        client_token = request.cookies[RequestUtils.SECURENATIVE_COOKIE]
+        if Utils.is_null_or_empty(client_token):
+            client_token = RequestUtils.get_secure_header_from_request(headers)
+
+        return ContextBuilder()\
+            .with_url(request.url)\
+            .with_method(request.method)\
+            .with_headers(headers)\
+            .with_client_token(client_token)\
+            .with_ip(RequestUtils.get_client_ip_from_request(request))\
+            .with_remote_ip(RequestUtils.get_remote_ip_from_request(request))\
+            .with_body(None)
 
     def build(self):
         return self.context
