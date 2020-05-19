@@ -1,24 +1,25 @@
 import logging
 
 
-class Logger(object):  # TODO!
+class Logger(object):
+    logger = logging.getLogger()
 
     @staticmethod
     def init_logger(level):
-        pass
+        logging.basicConfig(level=level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     @staticmethod
     def info(msg):
-        logging.info(msg)
+        Logger.logger.info(msg)
 
     @staticmethod
     def debug(msg):
-        pass
+        Logger.logger.debug(msg)
 
     @staticmethod
-    def warn(msg):
-        pass
+    def warning(msg):
+        Logger.logger.warning(msg)
 
     @staticmethod
     def error(msg):
-        pass
+        Logger.logger.error(msg)

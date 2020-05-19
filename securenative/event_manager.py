@@ -1,5 +1,6 @@
 import copy
 import json
+import sched
 import threading
 import time
 
@@ -31,6 +32,7 @@ class EventManager:
         self.send_enabled = False
         self.attempt = 0
         self.coefficients = [1, 1, 2, 3, 5, 8, 13]
+        self.scheduler = None
 
         if self.options.auto_send and not self.options.disable:
             interval_seconds = max(options.interval // 1000, 1)
@@ -38,7 +40,7 @@ class EventManager:
 
     def send_async(self, event, resource_path):
         if self.options.disable:
-            Logger.warn("SDK is disabled. no operation will be performed")
+            Logger.warning("SDK is disabled. no operation will be performed")
             return
 
         item = QueueItem(
@@ -60,7 +62,7 @@ class EventManager:
 
     def send_sync(self, event, resource_path, retry):
         if self.options.disable:
-            Logger.warn("SDK is disabled. no operation will be performed")
+            Logger.warning("SDK is disabled. no operation will be performed")
             return
 
         Logger.debug("Attempting to send event {}".format(event.as_dict()))
@@ -113,13 +115,21 @@ class EventManager:
         Logger.debug("Starting automatic event persistence")
         if self.options.auto_send or self.send_enabled:
             self.send_enabled = True
-            #  TODO add scheduler
+            try:
+                self.scheduler = sched.scheduler(time.time, time.sleep)
+                self.scheduler.enter(self.options.interval, 1, self._send_events)
+                self.scheduler.run()
+            except Exception:
+                pass
         else:
             Logger.debug("Automatic event persistence is disabled, you should persist events manually")
 
     def stop_event_persist(self):
         if self.send_enabled:
             Logger.debug("Attempting to stop automatic event persistence")
-            #  TODO shut down scheduler
+            try:
+                self.scheduler.cancel(self._send_events)
+            except ValueError:
+                pass
 
             Logger.debug("Stopped event persistence")

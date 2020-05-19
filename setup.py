@@ -21,6 +21,7 @@ setup(
     install_requires=[
         "requests",
         "pycrypro",
+        "crypto",
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
