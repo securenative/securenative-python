@@ -1,8 +1,24 @@
 import logging
 
-enable_sn_logging = False
 
+class Logger(object):  # TODO!
 
-def sn_logging(msg):
-    if enable_sn_logging:
+    @staticmethod
+    def init_logger(level):
+        pass
+
+    @staticmethod
+    def info(msg):
         logging.info(msg)
+
+    @staticmethod
+    def debug(msg):
+        pass
+
+    @staticmethod
+    def warn(msg):
+        pass
+
+    @staticmethod
+    def error(msg):
+        pass

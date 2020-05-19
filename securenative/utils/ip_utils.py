@@ -1,6 +1,6 @@
-import socket
-import re
 import ipaddress
+import re
+import socket
 
 
 class IpUtils(object):

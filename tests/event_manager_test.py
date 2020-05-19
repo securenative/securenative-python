@@ -35,7 +35,7 @@ class EventManagerTests(unittest.TestCase):
         client = HttpClientMock(functools.partial(self.assert_cb, wg, event))
 
         manager = EventManager(api_key=api_key, http_client=client)
-        manager.send_async(event, resource)
+        manager.send_async(event, resource, False)
         self.assertTrue(wg.wait(manager.options.interval // 1000 * 2))
 
     def assert_cb(self, wg, event, url, key, body):

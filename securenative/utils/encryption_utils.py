@@ -1,7 +1,9 @@
-from securenative.models.client_token import ClientToken
-from Crypto.Cipher import AES
-from Crypto import Random
 from binascii import unhexlify, hexlify
+
+from Crypto import Random
+from Crypto.Cipher import AES
+
+from securenative.models.client_token import ClientToken
 
 
 class EncryptionUtils(object):

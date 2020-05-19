@@ -1,35 +1,50 @@
+import copy
 import json
 import threading
-import copy
+import time
 
-from securenative.http.http_client import HttpClient
-from securenative.sdk_options import SecureNativeOptions
+from securenative.config.securenative_options import SecureNativeOptions
+from securenative.exceptions.securenative_http_exception import SecureNativeHttpException
+from securenative.http.securenative_http_client import SecureNativeHttpClient
+from securenative.logger import Logger
 
 
 class QueueItem:
-    def __init__(self, url, body):
+    def __init__(self, url, body, retry):
         self.url = url
         self.body = body
+        self.retry = retry
 
 
 class EventManager:
-    def __init__(self, api_key, options=SecureNativeOptions(), http_client=HttpClient()):
-        if api_key is None:
+    def __init__(self, options=SecureNativeOptions(), http_client=None):
+        if options.api_url is None:
             raise ValueError('API key cannot be None, please get your API key from SecureNative console.')
 
-        self.http_client = http_client
-        self.api_key = api_key
+        if not http_client:
+            self.http_client = SecureNativeHttpClient(options)
+        else:
+            self.http_client = http_client
+
         self.options = options
         self.queue = list()
+        self.send_enabled = False
+        self.attempt = 0
+        self.coefficients = [1, 1, 2, 3, 5, 8, 13]
 
-        if self.options.auto_send and self.options.is_sdk_enabled:
+        if self.options.auto_send and not self.options.disable:
             interval_seconds = max(options.interval // 1000, 1)
             threading.Timer(interval_seconds, self.flush).start()
 
     def send_async(self, event, resource_path):
+        if self.options.disable:
+            Logger.warn("SDK is disabled. no operation will be performed")
+            return
+
         item = QueueItem(
-            self._build_url(resource_path),
-            json.dumps(event.as_dict())
+            resource_path,
+            json.dumps(event.as_dict()),
+            False
         )
 
         self.queue.insert(0, item)
@@ -41,17 +56,70 @@ class EventManager:
         self.queue = list()
 
         for item in queue_copy:
-            self.http_client.post(item.url, self.api_key, item.body)
+            self.http_client.post(item.url, item.body)
 
-    def send_sync(self, event, resources_path):
-        return self.http_client.post(
-            self._build_url(resources_path),
-            self.api_key,
+    def send_sync(self, event, resource_path, retry):
+        if self.options.disable:
+            Logger.warn("SDK is disabled. no operation will be performed")
+            return
+
+        Logger.debug("Attempting to send event {}".format(event.as_dict()))
+        res = self.http_client.post(
+            resource_path,
             json.dumps(event.as_dict())
         )
+        if res.status != 200:
+            Logger.info("SecureNative failed to call endpoint {} with event {}. adding back to queue")
 
-    def _build_url(self, resource_path):
-        return self.options.api_url + "/" + resource_path
+            item = QueueItem(
+                resource_path,
+                json.dumps(event.as_dict()),
+                retry
+            )
+            self.queue.insert(0, item)
+            if self._is_queue_full():
+                self.queue = self.queue[:len(self.queue - 1)]
 
     def _is_queue_full(self):
         return len(self.queue) > self.options.max_events
+
+    def _send_events(self):
+        if len(self.queue) > 0 and self.send_enabled:
+            for item in self.queue:
+                try:
+                    res = self.http_client.post(item.url, item.body)
+                    if res.status is 401:
+                        item.retry = False
+                    elif res.status != 200:
+                        raise SecureNativeHttpException(res.status)
+
+                    Logger.debug("Event successfully sent; {}".format(item.body))
+                    self.queue.remove(item)
+                except Exception as e:
+                    Logger.error("Failed to send event; {}".format(e))
+                    if item.retry:
+                        if len(self.coefficients) == self.attempt + 1:
+                            self.attempt = 0
+
+                        back_off = self.coefficients[self.attempt] * self.options.interval
+                        Logger.debug("Automatic back-off of {}".format(back_off))
+                        self.send_enabled = False
+                        time.sleep(back_off)
+                        self.send_enabled = True
+                    else:
+                        self.queue.remove(item)
+
+    def start_event_persist(self):
+        Logger.debug("Starting automatic event persistence")
+        if self.options.auto_send or self.send_enabled:
+            self.send_enabled = True
+            #  TODO add scheduler
+        else:
+            Logger.debug("Automatic event persistence is disabled, you should persist events manually")
+
+    def stop_event_persist(self):
+        if self.send_enabled:
+            Logger.debug("Attempting to stop automatic event persistence")
+            #  TODO shut down scheduler
+
+            Logger.debug("Stopped event persistence")
