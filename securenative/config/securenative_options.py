@@ -4,7 +4,7 @@ from securenative.enums.failover_strategy import FailOverStrategy
 class SecureNativeOptions(object):
 
     def __init__(self, api_key=None, api_url=None, interval=1000, max_events=1000, timeout=1500, auto_send=True,
-                 disable=False, log_level="CRITICAL", fail_over_strategy=FailOverStrategy.FAIL_OPEN):
+                 disable=False, log_level="CRITICAL", fail_over_strategy=FailOverStrategy.FAIL_OPEN.value):
         self.api_key = api_key
         self.api_url = api_url
         self.interval = interval

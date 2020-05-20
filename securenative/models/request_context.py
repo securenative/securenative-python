@@ -58,4 +58,4 @@ class RequestContextBuilder(object):
         return self
 
     def build(self):
-        return RequestContext(self.cid, self.vid, self.fp, self.ip, self.remote_ip, self.url, self.method)
+        return RequestContext(self.cid, self.vid, self.fp, self.ip, self.remote_ip, self.headers, self.url, self.method)

@@ -33,6 +33,7 @@ class EventManager:
         self.attempt = 0
         self.coefficients = [1, 1, 2, 3, 5, 8, 13]
         self.scheduler = None
+        self.thread = None
 
         if self.options.auto_send and not self.options.disable:
             interval_seconds = max(options.interval // 1000, 1)
@@ -45,7 +46,7 @@ class EventManager:
 
         item = QueueItem(
             resource_path,
-            json.dumps(event.as_dict()),
+            json.dumps(EventManager.serialize(event)),
             False
         )
 
@@ -65,17 +66,17 @@ class EventManager:
             Logger.warning("SDK is disabled. no operation will be performed")
             return
 
-        Logger.debug("Attempting to send event {}".format(event.as_dict()))
+        Logger.debug("Attempting to send event {}".format(event))
         res = self.http_client.post(
             resource_path,
-            json.dumps(event.as_dict())
+            json.dumps(EventManager.serialize(event))
         )
-        if res.status != 200:
-            Logger.info("SecureNative failed to call endpoint {} with event {}. adding back to queue")
-
+        if res.status_code != 200:
+            Logger.info("SecureNative failed to call endpoint {} with event {}. adding back to queue".format(
+                resource_path, event))
             item = QueueItem(
                 resource_path,
-                json.dumps(event.as_dict()),
+                json.dumps(EventManager.serialize(event)),
                 retry
             )
             self.queue.insert(0, item)
@@ -90,10 +91,10 @@ class EventManager:
             for item in self.queue:
                 try:
                     res = self.http_client.post(item.url, item.body)
-                    if res.status is 401:
+                    if res.status_code is 401:
                         item.retry = False
-                    elif res.status != 200:
-                        raise SecureNativeHttpException(res.status)
+                    elif res.status_code != 200:
+                        raise SecureNativeHttpException(res.status_code)
 
                     Logger.debug("Event successfully sent; {}".format(item.body))
                     self.queue.remove(item)
@@ -116,9 +117,10 @@ class EventManager:
         if self.options.auto_send or self.send_enabled:
             self.send_enabled = True
             try:
+
                 self.scheduler = sched.scheduler(time.time, time.sleep)
                 self.scheduler.enter(self.options.interval, 1, self._send_events)
-                self.scheduler.run()
+                self.thread = threading.Thread(target=self.scheduler.run).start()
             except Exception:
                 pass
         else:
@@ -128,8 +130,34 @@ class EventManager:
         if self.send_enabled:
             Logger.debug("Attempting to stop automatic event persistence")
             try:
+                self.thread.stop()
                 self.scheduler.cancel(self._send_events)
             except ValueError:
                 pass
 
             Logger.debug("Stopped event persistence")
+
+    @staticmethod
+    def serialize(obj):
+        return {
+            "rid": obj.rid,
+            "eventType": obj.event_type.value,
+            "userId": obj.user_id,
+            "userTraits": {
+                "name": obj.user_traits.name,
+                "email": obj.user_traits.email,
+                "createdAt": obj.user_traits.created_at,
+            },
+            "request": {
+                "cid": obj.request.cid,
+                "vid": obj.request.vid,
+                "fp": obj.request.fp,
+                "ip": obj.request.ip,
+                "remoteIp": obj.request.remote_ip,
+                "method": obj.request.method,
+                "url": obj.request.url,
+                "headers": obj.request.headers
+            },
+            "timestamp": obj.timestamp,
+            "properties": obj.properties,
+        }

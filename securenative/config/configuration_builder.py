@@ -13,7 +13,7 @@ class ConfigurationBuilder(object):
         self.auto_send = True
         self.disable = False
         self.log_level = "CRITICAL"
-        self.fail_over_strategy = FailOverStrategy.FAIL_OPEN
+        self.fail_over_strategy = FailOverStrategy.FAIL_OPEN.value
 
     @staticmethod
     def default_config_builder():

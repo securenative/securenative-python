@@ -7,7 +7,7 @@ from securenative.config.configuration_builder import ConfigurationBuilder
 class ConfigurationManager(object):
     DEFAULT_CONFIG_FILE = "securenative.ini"
     CUSTOM_CONFIG_FILE_ENV_NAME = "SECURENATIVE_COMFIG_FILE"
-    config = ConfigParser.ConfigParser()
+    config = ConfigParser()
 
     @classmethod
     def read_resource_file(cls, resource_path):

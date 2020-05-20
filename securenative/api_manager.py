@@ -15,15 +15,15 @@ class ApiManager(object):
     def track(self, event_options):
         Logger.debug("Track event call")
         event = SDKEvent(event_options, self.options)
-        self.event_manager.send_async(event, ApiRoute.TRACK, True)
+        self.event_manager.send_async(event, ApiRoute.TRACK.value)
 
     def verify(self, event_options):
         Logger.debug("Verify event call")
         event = SDKEvent(event_options, self.options)
         try:
-            self.event_manager.send_sync(VerifyResult, event, ApiRoute.VERIFY)
+            self.event_manager.send_sync(event, ApiRoute.VERIFY.value, False)
         except Exception as e:
             Logger.debug("Failed to call verify; {}".format(e))
-            if self.options.fail_over_startegy is FailOverStrategy.FAIL_OPEN:
-                return VerifyResult(RiskLevel.LOW, 0, None)
-            return VerifyResult(RiskLevel.HIGH, 1, None)
+            if self.options.fail_over_strategy is FailOverStrategy.FAIL_OPEN.value:
+                return VerifyResult(RiskLevel.LOW.value, 0, None)
+            return VerifyResult(RiskLevel.HIGH.value, 1, None)
