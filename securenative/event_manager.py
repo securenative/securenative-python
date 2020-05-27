@@ -133,7 +133,7 @@ class EventManager:
             try:
                 if self.thread:
                     self.thread.stop()
-                self.scheduler.cancel(self._send_events)
+                    self.scheduler.cancel(self._send_events)
             except ValueError as e:
                 Logger.error("Could not stop event scheduler; {}".format(e))
 
