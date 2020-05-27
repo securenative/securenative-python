@@ -15,7 +15,7 @@ class ApiManager(object):
     def track(self, event_options):
         Logger.debug("Track event call")
         event = SDKEvent(event_options, self.options)
-        self.event_manager.send_async(event, ApiRoute.TRACK.value)
+        return self.event_manager.send_async(event, ApiRoute.TRACK.value)
 
     def verify(self, event_options):
         Logger.debug("Verify event call")

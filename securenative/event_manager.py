@@ -19,7 +19,7 @@ class QueueItem:
 
 class EventManager:
     def __init__(self, options=SecureNativeOptions(), http_client=None):
-        if options.api_url is None:
+        if options.api_key is None:
             raise ValueError('API key cannot be None, please get your API key from SecureNative console.')
 
         if not http_client:
@@ -82,6 +82,7 @@ class EventManager:
             self.queue.insert(0, item)
             if self._is_queue_full():
                 self.queue = self.queue[:len(self.queue - 1)]
+        return res
 
     def _is_queue_full(self):
         return len(self.queue) > self.options.max_events
@@ -98,6 +99,7 @@ class EventManager:
 
                     Logger.debug("Event successfully sent; {}".format(item.body))
                     self.queue.remove(item)
+                    return res
                 except Exception as e:
                     Logger.error("Failed to send event; {}".format(e))
                     if item.retry:
@@ -117,12 +119,11 @@ class EventManager:
         if self.options.auto_send or self.send_enabled:
             self.send_enabled = True
             try:
-
                 self.scheduler = sched.scheduler(time.time, time.sleep)
                 self.scheduler.enter(self.options.interval, 1, self._send_events)
                 self.thread = threading.Thread(target=self.scheduler.run).start()
-            except Exception:
-                pass
+            except Exception as e:
+                Logger.error("Could not start event scheduler; {}".format(e))
         else:
             Logger.debug("Automatic event persistence is disabled, you should persist events manually")
 
@@ -130,10 +131,11 @@ class EventManager:
         if self.send_enabled:
             Logger.debug("Attempting to stop automatic event persistence")
             try:
-                self.thread.stop()
+                if self.thread:
+                    self.thread.stop()
                 self.scheduler.cancel(self._send_events)
-            except ValueError:
-                pass
+            except ValueError as e:
+                Logger.error("Could not stop event scheduler; {}".format(e))
 
             Logger.debug("Stopped event persistence")
 

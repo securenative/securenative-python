@@ -24,10 +24,9 @@ class IpUtils(object):
 
         ip = ipaddress.IPv4Address(ip_address)
         if ip.is_loopback \
-                or ip.is_global \
+                or not ip.is_global \
                 or ip.is_private \
                 or ip.is_link_local \
-                or ip.is_multicast \
                 or ip.is_multicast \
                 or ip.is_reserved \
                 or ip.is_unspecified:

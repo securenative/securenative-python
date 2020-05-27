@@ -52,6 +52,10 @@ class ConfigurationBuilder(object):
         return self
 
     def with_fail_over_strategy(self, fail_over_strategy):
+        if fail_over_strategy != FailOverStrategy.FAIL_OPEN.value and \
+                fail_over_strategy != FailOverStrategy.FAIL_CLOSED.value:
+            self.fail_over_strategy = FailOverStrategy.FAIL_OPEN.value
+            return self
         self.fail_over_strategy = fail_over_strategy
         return self
 
