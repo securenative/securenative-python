@@ -1,5 +1,6 @@
-from binascii import unhexlify, hexlify
 import json
+from binascii import unhexlify, hexlify
+from json import JSONDecodeError
 
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -27,8 +28,11 @@ class EncryptionUtils(object):
         cipher_text = content[cls.BLOCK_SIZE:]
         aes = AES.new(key, AES.MODE_CBC, iv)
         rv = aes.decrypt(cipher_text).decode("utf-8").strip()
-        secret = json.loads(rv)
-        return ClientToken(secret.get("cid"), secret.get("vid"), secret.get("fp"))
+        try:
+            secret = json.loads(rv)
+            return ClientToken(secret.get("cid"), secret.get("vid"), secret.get("fp"))
+        except JSONDecodeError:
+            return rv
 
     @classmethod
     def _pad(cls, s):
