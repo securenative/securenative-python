@@ -83,3 +83,7 @@ class SecureNative:
     @classmethod
     def _flush(cls):
         cls._securenative = None
+
+    # TODO!
+    def verify_request_payload(self, request):
+        pass

@@ -16,8 +16,8 @@ class EncryptionUtils(object):
         key = cipher_key[:cls.KEY_SIZE]
         iv = Random.new().read(AES.block_size)
         cipher = AES.new(key, AES.MODE_CBC, iv)
-        raw = cls._pad(text)
-        return hexlify(iv + cipher.encrypt(raw)).decode('utf-8')
+        raw = str(cls._pad(text))
+        return hexlify(iv + cipher.encrypt(raw))
 
     @classmethod
     def decrypt(cls, encrypted, cipher_key):
