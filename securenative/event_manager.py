@@ -26,11 +26,11 @@ class EventManager:
         else:
             self.http_client = http_client
 
+        self.queue = list()
         self.thread = threading.Thread(target=self.run, daemon=True)
         self.thread.start()
 
         self.options = options
-        self.queue = list()
         self.send_enabled = False
         self.attempt = 0
         self.coefficients = [1, 1, 2, 3, 5, 8, 13]
