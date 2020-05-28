@@ -1,98 +1,169 @@
-# Python SDK for Secure Native
+<p align="center">
+  <a href="https://www.securenative.com"><img src="https://user-images.githubusercontent.com/45174009/77826512-f023ed80-7120-11ea-80e0-58aacde0a84e.png" alt="SecureNative Logo"/></a>
+</p>
 
-## How to get it?
-the python SDK is published to PyPi so you can just use `pip` to install it:
+<p align="center">
+  <b>A Cloud-Native Security Monitoring and Protection for Modern Applications</b>
+</p>
+<p align="center">
+  <a href="https://github.com/securenative/securenative-python">
+    <img alt="Github Actions" src="https://github.com/securenative/securenative-java/workflows/CI/badge.svg">
+  </a>
+</p>
+<p align="center">
+  <a href="https://docs.securenative.com">Documentation</a> |
+  <a href="https://docs.securenative.com/quick-start">Quick Start</a> |
+  <a href="https://blog.securenative.com">Blog</a> |
+  <a href="">Chat with us on Slack!</a>
+</p>
+<hr/>
+
+
+[SecureNative](https://www.securenative.com/) performs user monitoring by analyzing user interactions with your application and various factors such as network, devices, locations and access patterns to stop and prevent account takeover attacks.
+
+
+## Install the SDK
+
+When using PyPi, run the following:
 ```bash
 pip install securenative
 ```
 
 ## Initialize the SDK
-Go to the settings page of your SecureNative account and find your API key, afterwards add this line on your application main module.
-```python
-import securenative
 
-# Many lines of code ...
+To get your *API KEY*, login to your SecureNative account and go to project settings page:
 
-if __name__=='__main__':
-    # Your bootstrap code
-    securenative.init('API_KEY') # Should be called before any other call to secure native
-```
-
-## Tracking Events (async)
-Once the SDK has been initialized, you can start sending new events with the `track` function:
-```python
-import securenative
-from securenative.event_options import Event, User
-
-def my_login_function():
-    # Many lines of code ...
-    
-    event = Event( # Build the event from the request's context
-        event_type=securenative.event_types.login,
-        ip='35.199.23.1',
-        remote_ip='35.199.23.2',
-        user_agent='Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile Safari/537.36',
-        sn_cookie_value='eyJjaWQiOiJkYzgyYjdhZS00ODFkLTQyODItYTMyZC0xZTU1Njk2ZjNmZTQiLCJmcCI6Ijk5NGYzZjVjZTRiYWUwODQzMTRhOTFkNzgyN2I1MWYuMjQ3MDBmOWYxOTg2ODAwYWI0ZmNjODgwNTMwZGQwZWQifQ',
-        user=User(
-            user_id='1',
-            user_email='1@example.com',
-            user_name='example example'
-        )
-    )
-    
-    # Track it:
-    securenative.track(event)
-    
-    # Many lines of code ...
-
-```
-
-## Verification Events (sync)
-Once the SDK has been initialized, you can protect sensitive operation by calling the `verify` function, this function will return the risk analysis of the current user.
+### Option 1: Initialize via Config file
+SecureNative can automatically load your config from *securenative.ini* file or from the file that is specified in your *SECURENATIVE_CONFIG_FILE* env variable:
 
 ```python
-import securenative
-from securenative.event_options import Event, User
+from securenative.securenative import SecureNative
 
-def my_change_password_function():
-    # Many lines of code...
-    
-    event = Event( # Build the event from the request's context
-            event_type=securenative.event_types.verify,
-            ip='35.199.23.1',
-            remote_ip='35.199.23.2',
-            user_agent='Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile Safari/537.36',
-            sn_cookie_value='eyJjaWQiOiJkYzgyYjdhZS00ODFkLTQyODItYTMyZC0xZTU1Njk2ZjNmZTQiLCJmcCI6Ijk5NGYzZjVjZTRiYWUwODQzMTRhOTFkNzgyN2I1MWYuMjQ3MDBmOWYxOTg2ODAwYWI0ZmNjODgwNTMwZGQwZWQifQ',
-            user=User(
-                user_id='1',
-                user_email='1@example.com',
-                user_name='example example'
-            )
-        )
-     
-    result = securenative.verify(event)
-    if result['riskLevel'] == 'high':
-        return 'Cannot change password'
-    elif result['riskLevel'] == 'medium':
-        return 'MFA'
-     
-     # Many lines of code...
+
+secureative =  SecureNative.init()
 ```
+### Option 2: Initialize via API Key
 
-## Verifying Incoming Webhooks
-You can use the SDK to verify incoming webhooks from Secure Native, just call the `veriy_webhook` function which return a boolean which indicates if the webhook came from Secure Native servers.
 ```python
-import securenative
+from securenative.securenative import SecureNative
 
-@post('/sn/webhook')
-def sn_webhook_handler(headers, body):
-    sig_header = headers["X-SecureNative"]
-    if securenative.verify_webhook(sig_header, body):
-        # Handle the webhook
-        level = body['riskLevel']
-        pass
-    else:
-        # This reqeust wasn't sent from Secure Native servers, you can dismiss/investigate it
-        pass
-    
+
+securenative =  SecureNative.init_with_api_key("YOUR_API_KEY")
 ```
+
+### Option 3: Initialize via ConfigurationBuilder
+```python
+from securenative.securenative import SecureNative
+
+
+securenative = SecureNative.init_with_options(SecureNative.config_builder()
+                                        .with_api_key("API_KEY")
+                                        .with_max_events(10)
+                                        .with_log_level("ERROR")
+                                        .build())
+```
+
+## Getting SecureNative instance
+Once initialized, sdk will create a singleton instance which you can get: 
+```python
+from securenative.securenative import SecureNative
+
+
+secureNative = SecureNative.get_instance()
+```
+
+## Tracking events
+
+Once the SDK has been initialized, tracking requests sent through the SDK
+instance. Make sure you build event with the EventBuilder:
+
+ ```python
+from securenative.securenative import SecureNative
+from securenative.event_options_builder import EventOptionsBuilder
+from securenative.enums.event_types import EventTypes
+from securenative.models.user_traits import UserTraits
+
+
+securenative = SecureNative.get_instance()
+
+context = SecureNative.context_builder().\
+        with_ip("127.0.0.1").\
+        with_client_token("SECURED_CLIENT_TOKEN").\
+        with_headers({"user-agent", "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"}).\
+        build()
+
+event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
+with_user_id("USER_ID").\
+        with_user_traits(UserTraits("USER_NAME", "USER_EMAIL")).\
+        with_context(context).\
+        with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
+        build()
+
+securenative.track(event_options)
+ ```
+
+You can also create request context from requests:
+
+```python
+from securenative.securenative import SecureNative
+from securenative.event_options_builder import EventOptionsBuilder
+from securenative.enums.event_types import EventTypes
+from securenative.models.user_traits import UserTraits
+
+
+def track(request):
+    securenative = SecureNative.get_instance()
+    context = SecureNative.context_builder().from_http_request(request).build()
+
+    event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
+        with_user_id("USER_ID").\
+        with_user_traits(UserTraits("USER_NAME", "USER_EMAIL")).\
+        with_context(context).\
+        with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
+        build()
+    
+    securenative.track(event_options)
+```
+
+## Verify events
+
+**Example**
+
+```python
+from securenative.securenative import SecureNative
+from securenative.event_options_builder import EventOptionsBuilder
+from securenative.enums.event_types import EventTypes
+from securenative.models.user_traits import UserTraits
+
+
+def track(request):
+    securenative = SecureNative.get_instance()
+    context = SecureNative.context_builder().from_http_request(request).build()
+
+    event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
+        with_user_id("USER_ID").\
+        with_user_traits(UserTraits("USER_NAME", "USER_EMAIL")).\
+        with_context(context).\
+        with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
+        build()
+    
+    verify_result = securenative.verify(event_options)
+    verify_result.risk_level  # Low, Medium, High
+    verify_result.score  # Risk score: 0 -1 (0 - Very Low, 1 - Very High)
+    verify_result.triggers  # ["TOR", "New IP", "New City"]
+```
+
+## Webhook signature verification
+
+Apply our filter to verify the request is from us, for example:
+
+```python
+from securenative.securenative import SecureNative
+
+
+def webhook_endpoint(request):
+    securenative = SecureNative.get_instance()
+    
+    # Checks if request is verified
+    is_verified = securenative.verify_request_payload(request)
+ ```

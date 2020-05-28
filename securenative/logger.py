@@ -1,8 +1,25 @@
 import logging
 
-enable_sn_logging = False
 
+class Logger(object):
+    logger = logging.getLogger()
 
-def sn_logging(msg):
-    if enable_sn_logging:
-        logging.info(msg)
+    @staticmethod
+    def init_logger(level):
+        logging.basicConfig(level=level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+    @staticmethod
+    def info(msg):
+        Logger.logger.info(msg)
+
+    @staticmethod
+    def debug(msg):
+        Logger.logger.debug(msg)
+
+    @staticmethod
+    def warning(msg):
+        Logger.logger.warning(msg)
+
+    @staticmethod
+    def error(msg):
+        Logger.logger.error(msg)

@@ -1,17 +1,18 @@
-from setuptools import setup, Extension
+import setuptools
+from setuptools import setup
 
-from securenative.config import sdk_version
+from securenative.utils.version_utils import VersionUtils
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
     name='securenative',
-    packages=['securenative'],
-    version=sdk_version,
+    packages=setuptools.find_packages(),
+    version=VersionUtils.get_version(),
     license='MIT',
     description='Secure Native SDK for python',
-    author='Secure Native',
+    author='SecureNative',
     author_email='support@securenative.com',
     url='http://www.securenative.com',
     download_url='https://github.com/securenative/securenative-python/archive/0.1.tar.gz',
@@ -20,7 +21,8 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=[
         "requests",
-        "pycrypro",
+        "pycrypto",
+        "crypto",
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
