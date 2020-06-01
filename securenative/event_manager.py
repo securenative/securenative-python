@@ -77,7 +77,7 @@ class EventManager:
                 json.dumps(EventManager.serialize(event)),
                 retry
             )
-            self.queue.append(0, item)
+            self.queue.append(item)
             if self._is_queue_full():
                 self.queue = self.queue[:len(self.queue - 1)]
         return res
@@ -136,7 +136,7 @@ class EventManager:
     def serialize(obj):
         return {
             "rid": obj.rid,
-            "eventType": obj.event_type.value,
+            "eventType": obj.event_type,
             "userId": obj.user_id,
             "userTraits": {
                 "name": obj.user_traits.name,
