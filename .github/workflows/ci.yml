@@ -23,14 +23,17 @@ jobs:
         status: STARTING
         color: warning
 
+    - name: Run Tests
+      run: python -m unittest
+
+    - name: Build dist
+      run: python setup.py sdist bdist_wheel
+
     - name: Publish a Python distribution to PyPI
       uses: pypa/gh-action-pypi-publish@master
       with:
         user: ${{ secrets.PYPI_USER }}
         password: ${{ secrets.PYPI_PASSWORD }}
-
-    - name: Run Tests
-      run: python -m unittest
 
     - name: Notify slack success
       if: success()
