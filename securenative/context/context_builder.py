@@ -42,9 +42,16 @@ class ContextBuilder(object):
 
     @staticmethod
     def from_http_request(request):
-        headers = request.headers
+        try:
+            client_token = request.cookies[RequestUtils.SECURENATIVE_COOKIE]
+        except AttributeError:
+            client_token = None
 
-        client_token = request.cookies[RequestUtils.SECURENATIVE_COOKIE]
+        try:
+            headers = request.headers
+        except AttributeError:
+            headers = None
+
         if Utils.is_null_or_empty(client_token):
             client_token = RequestUtils.get_secure_header_from_request(headers)
 

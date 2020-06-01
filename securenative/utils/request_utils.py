@@ -4,7 +4,9 @@ class RequestUtils(object):
 
     @staticmethod
     def get_secure_header_from_request(headers):
-        return headers[RequestUtils.SECURENATIVE_HEADER]
+        if headers:
+            return headers[RequestUtils.SECURENATIVE_HEADER]
+        return []
 
     @staticmethod
     def get_client_ip_from_request(request):
@@ -17,4 +19,7 @@ class RequestUtils(object):
 
     @staticmethod
     def get_remote_ip_from_request(request):
-        return request.raw._original_response.fp.raw._sock.getpeername()[0]
+        try:
+            return request.raw._original_response.fp.raw._sock.getpeername()[0]
+        except AttributeError:
+            return ""

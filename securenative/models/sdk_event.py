@@ -21,9 +21,9 @@ class SDKEvent(object):
         self.user_id = event_options.user_id
         self.user_traits = event_options.user_traits
         self.request = RequestContextBuilder() \
-            .with_cid(client_token.cid) \
-            .with_vid(client_token.vid) \
-            .with_fp(client_token.fp) \
+            .with_cid(client_token.cid if client_token else "") \
+            .with_vid(client_token.vid if client_token else "") \
+            .with_fp(client_token.fp if client_token else "") \
             .with_ip(self.context.ip) \
             .with_remote_ip(self.context.remote_ip) \
             .with_method(self.context.method) \
