@@ -9,7 +9,6 @@ on:
 
 jobs:
   ci:
-
     runs-on: ubuntu-latest
     steps:
     - name: Notify slack success
@@ -25,17 +24,6 @@ jobs:
 
     - name: Run Tests
       uses: onichandame/python-test-action@master
-      run: python -m unittest
-
-    - name: Build dist
-      uses: actions/setup-python@v2
-      run: python setup.py sdist bdist_wheel
-
-    - name: Publish a Python distribution to PyPI
-      uses: pypa/gh-action-pypi-publish@master
-      with:
-        user: ${{ secrets.PYPI_USER }}
-        password: ${{ secrets.PYPI_PASSWORD }}
 
     - name: Notify slack success
       if: success()
