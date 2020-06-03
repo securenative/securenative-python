@@ -34,8 +34,6 @@ jobs:
     - name: Test with pytest
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      with:
-        python-version: '3.x'
       run: |
         py.test --cov-report=xml --cov=securenative tests/
 
