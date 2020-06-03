@@ -87,7 +87,7 @@ class EventManager:
                 for item in self.queue:
                     try:
                         res = self.http_client.post(item.url, item.body)
-                        if res.status_code is 401:
+                        if res.status_code == 401:
                             item.retry = False
                         elif res.status_code != 200:
                             raise SecureNativeHttpException(res.status_code)
