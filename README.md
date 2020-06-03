@@ -9,6 +9,12 @@
   <a href="https://github.com/securenative/securenative-python">
     <img alt="Github Actions" src="https://github.com/securenative/securenative-java/workflows/CI/badge.svg">
   </a>
+  <a href="https://codecov.io/gh/securenative/securenative-python">
+    <img src="https://codecov.io/gh/securenative/securenative-python/branch/master/graph/badge.svg" />
+  </a>
+  <a href="https://pypi.org/project/securenative/">
+    <img src="https://img.shields.io/pypi/pyversions/securenative" alt="python version" height="20">
+  </a>
 </p>
 <p align="center">
   <a href="https://docs.securenative.com">Documentation</a> |
