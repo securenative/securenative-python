@@ -31,11 +31,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install codecov
+        pip install pytest pytest-cov
     - name: Test with pytest
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
-        py.test --cov-report=xml --cov=securenative tests/
+        pytest --cov=./
 
     - name: Notify slack success
       if: success()
