@@ -1,3 +1,5 @@
+import json
+
 from securenative.enums.api_route import ApiRoute
 from securenative.enums.failover_strategy import FailOverStrategy
 from securenative.enums.risk_level import RiskLevel
@@ -21,7 +23,8 @@ class ApiManager(object):
         Logger.debug("Verify event call")
         event = SDKEvent(event_options, self.options)
         try:
-            self.event_manager.send_sync(event, ApiRoute.VERIFY.value, False)
+            res = json.loads(self.event_manager.send_sync(event, ApiRoute.VERIFY.value, False))
+            return VerifyResult(res["riskLevel"], res["score"], res["triggers"])
         except Exception as e:
             Logger.debug("Failed to call verify; {}".format(e))
             if self.options.fail_over_strategy is FailOverStrategy.FAIL_OPEN.value:

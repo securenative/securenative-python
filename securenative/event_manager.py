@@ -1,4 +1,3 @@
-import copy
 import json
 import threading
 import time
@@ -53,10 +52,7 @@ class EventManager:
             self.queue = self.queue[:len(self.queue - 1)]
 
     def flush(self):
-        queue_copy = copy.copy(self.queue)
-        self.queue = list()
-
-        for item in queue_copy:
+        for item in self.queue:
             self.http_client.post(item.url, item.body)
 
     def send_sync(self, event, resource_path, retry):
@@ -97,7 +93,6 @@ class EventManager:
                             raise SecureNativeHttpException(res.status_code)
 
                         Logger.debug("Event successfully sent; {}".format(item.body))
-                        self.queue.remove(item)
                         return res
                     except Exception as e:
                         Logger.error("Failed to send event; {}".format(e))
@@ -110,8 +105,6 @@ class EventManager:
                             self.send_enabled = False
                             time.sleep(back_off)
                             self.send_enabled = True
-                        else:
-                            self.queue.remove(item)
                 time.sleep(self.interval/1000)
 
     def start_event_persist(self):
@@ -125,6 +118,7 @@ class EventManager:
         if self.send_enabled:
             Logger.debug("Attempting to stop automatic event persistence")
             try:
+                self.flush()
                 if self.thread:
                     self.thread.stop()
             except ValueError as e:
