@@ -1,15 +1,17 @@
 import setuptools
 from setuptools import setup
 
-from securenative.utils.version_utils import VersionUtils
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open('VERSION') as f:
+    version = f.read()
+
 setup(
     name='securenative',
     packages=setuptools.find_packages(),
-    version=VersionUtils.get_version(),
+    version=version,
     license='MIT',
     description='Secure Native SDK for python',
     author='SecureNative',

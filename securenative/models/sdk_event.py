@@ -17,7 +17,7 @@ class SDKEvent(object):
         client_token = EncryptionUtils.decrypt(self.context.client_token, securenative_options.api_key)
 
         self.rid = str(uuid.uuid4())
-        self.event_type = event_options.event
+        self.event_type = event_options.event.value
         self.user_id = event_options.user_id
         self.user_traits = event_options.user_traits
         self.request = RequestContextBuilder() \

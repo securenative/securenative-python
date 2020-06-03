@@ -33,6 +33,7 @@ class ApiManagerTest(unittest.TestCase):
                              "prop2": True,
                              "prop3": 3}).build()
 
+    @responses.activate
     def test_track_event(self):
         options = ConfigurationManager.config_builder(). \
             with_api_key("YOUR_API_KEY"). \
@@ -58,6 +59,7 @@ class ApiManagerTest(unittest.TestCase):
         finally:
             event_manager.stop_event_persist()
 
+    @responses.activate
     def test_securenative_invalid_options_exception(self):
         options = ConfigurationManager.config_builder(). \
             with_api_key("YOUR_API_KEY"). \
@@ -82,13 +84,21 @@ class ApiManagerTest(unittest.TestCase):
         finally:
             event_manager.stop_event_persist()
 
+    @responses.activate
     def test_verify_event(self):
         options = ConfigurationManager.config_builder(). \
             with_api_key("YOUR_API_KEY"). \
             with_api_url("https://api.securenative-stg.com/collector/api/v1")
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/verify",
-                      json={}, status=200)
+                      json={
+                          "riskLevel": "medium",
+                          "score": 0.32,
+                          "triggers": [
+                              "New IP",
+                              "New City"
+                          ]
+                      }, status=200)
         verify_result = VerifyResult(RiskLevel.LOW, 0, None)
 
         event_manager = EventManager(options)

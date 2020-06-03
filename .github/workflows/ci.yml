@@ -23,7 +23,7 @@ jobs:
         color: warning
 
     - name: Run Tests
-      uses: onichandame/python-test-action@master
+      run: py.test --cov-report=xml --cov=securenative-python tests/
 
     - name: Notify slack success
       if: success()
