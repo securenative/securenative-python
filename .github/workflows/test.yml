@@ -3,9 +3,8 @@ name: Testing
 on:
   push:
     branches:
-      - master
-      - dev
-      - dev-*
+      - '*'
+      - '!master'
 
 jobs:
   test:
