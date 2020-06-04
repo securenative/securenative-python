@@ -33,11 +33,12 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-cov responses codecov requests-mock
     - name: Test with pytest
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: |
         pytest --cov=./
-        bash <(curl -s https://codecov.io/bash)
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Notify slack success
       if: success()
