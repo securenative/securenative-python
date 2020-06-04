@@ -1,5 +1,4 @@
 requests~=2.23.0
-pycrypto~=2.6.1
 crypto==1.4.1
 responses==0.10.14
 requests-mock==1.8.0
