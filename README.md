@@ -46,7 +46,7 @@ SecureNative can automatically load your config from *securenative.ini* file or 
 from securenative.securenative import SecureNative
 
 
-securenative =  SecureNative.init()
+securenative = SecureNative.init()
 ```
 ### Option 2: Initialize via API Key
 
@@ -54,7 +54,7 @@ securenative =  SecureNative.init()
 from securenative.securenative import SecureNative
 
 
-securenative =  SecureNative.init_with_api_key("YOUR_API_KEY")
+securenative = SecureNative.init_with_api_key("YOUR_API_KEY")
 ```
 
 ### Option 3: Initialize via ConfigurationBuilder
