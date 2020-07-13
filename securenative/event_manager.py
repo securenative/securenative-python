@@ -90,10 +90,9 @@ class EventManager:
                         if res.status_code == 401:
                             item.retry = False
                         elif res.status_code != 200:
-                            raise SecureNativeHttpException(res.status_code)
+                            item.retry = True
 
                         Logger.debug("Event successfully sent; {}".format(item.body))
-                        return res
                     except Exception as e:
                         Logger.error("Failed to send event; {}".format(e))
                         if item.retry:

@@ -7,6 +7,7 @@ from securenative.exceptions.securenative_config_exception import SecureNativeCo
 from securenative.exceptions.securenative_sdk_Illegal_state_exception import SecureNativeSDKIllegalStateException
 from securenative.exceptions.securenative_sdk_exception import SecureNativeSDKException
 from securenative.logger import Logger
+from securenative.utils.signature_utils import SignatureUtils
 from securenative.utils.utils import Utils
 
 
@@ -75,15 +76,17 @@ class SecureNative:
         return ContextBuilder.default_context_builder()
 
     def track(self, event_options):
-        self._api_manager.track(event_options)
+        return self._api_manager.track(event_options)
 
     def verify(self, event_options):
-        self._api_manager.verify(event_options)
+        return self._api_manager.verify(event_options)
 
     @classmethod
     def _flush(cls):
         cls._securenative = None
 
-    # TODO!
     def verify_request_payload(self, request):
-        pass
+        request_signature = request.header[SignatureUtils.SignatureHeader]
+        body = request.body
+
+        SignatureUtils.is_valid_signature(self._options.api_key, body, request_signature)

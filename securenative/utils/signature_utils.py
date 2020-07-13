@@ -3,6 +3,7 @@ import hashlib
 
 
 class SignatureUtils(object):
+    SignatureHeader = "x-securenative"
 
     @staticmethod
     def is_valid_signature(api_key, payload, header_signature):

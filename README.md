@@ -7,7 +7,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/securenative/securenative-python">
-    <img alt="Github Actions" src="https://github.com/securenative/securenative-java/workflows/CI/badge.svg">
+    <img alt="Github Actions" src="https://github.com/securenative/securenative-python/workflows/CI/badge.svg">
   </a>
   <a href="https://codecov.io/gh/securenative/securenative-python">
     <img src="https://codecov.io/gh/securenative/securenative-python/branch/master/graph/badge.svg" />
@@ -46,7 +46,7 @@ SecureNative can automatically load your config from *securenative.ini* file or 
 from securenative.securenative import SecureNative
 
 
-secureative =  SecureNative.init()
+securenative =  SecureNative.init()
 ```
 ### Option 2: Initialize via API Key
 
@@ -99,8 +99,8 @@ context = SecureNative.context_builder().\
         build()
 
 event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
-with_user_id("USER_ID").\
-        with_user_traits(UserTraits("USER_NAME", "USER_EMAIL")).\
+with_user_id("1234").\
+        with_user_traits(UserTraits("Your Name", "name@gmail.com")).\
         with_context(context).\
         with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
         build()
@@ -122,8 +122,8 @@ def track(request):
     context = SecureNative.context_builder().from_http_request(request).build()
 
     event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
-        with_user_id("USER_ID").\
-        with_user_traits(UserTraits("USER_NAME", "USER_EMAIL")).\
+        with_user_id("1234").\
+        with_user_traits(UserTraits("Your Name", "name@gmail.com")).\
         with_context(context).\
         with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
         build()
@@ -147,8 +147,8 @@ def track(request):
     context = SecureNative.context_builder().from_http_request(request).build()
 
     event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
-        with_user_id("USER_ID").\
-        with_user_traits(UserTraits("USER_NAME", "USER_EMAIL")).\
+        with_user_id("1234").\
+        with_user_traits(UserTraits("Your Name", "name@gmail.com")).\
         with_context(context).\
         with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
         build()
