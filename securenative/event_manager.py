@@ -3,7 +3,6 @@ import threading
 import time
 
 from securenative.config.securenative_options import SecureNativeOptions
-from securenative.exceptions.securenative_http_exception import SecureNativeHttpException
 from securenative.http.securenative_http_client import SecureNativeHttpClient
 from securenative.logger import Logger
 
@@ -91,6 +90,7 @@ class EventManager:
                             item.retry = False
                         elif res.status_code != 200:
                             item.retry = True
+                        self.queue.remove(item)
 
                         Logger.debug("Event successfully sent; {}".format(item.body))
                     except Exception as e:
@@ -134,6 +134,7 @@ class EventManager:
             "userTraits": {
                 "name": obj.user_traits.name,
                 "email": obj.user_traits.email,
+                "phone": obj.user_traits.phone,
                 "createdAt": obj.user_traits.created_at,
             },
             "request": {

@@ -100,7 +100,7 @@ context = SecureNative.context_builder().\
 
 event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
 with_user_id("1234").\
-        with_user_traits(UserTraits("Your Name", "name@gmail.com")).\
+        with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).\
         with_context(context).\
         with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
         build()
@@ -123,7 +123,7 @@ def track(request):
 
     event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
         with_user_id("1234").\
-        with_user_traits(UserTraits("Your Name", "name@gmail.com")).\
+        with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).\
         with_context(context).\
         with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
         build()
@@ -148,7 +148,7 @@ def track(request):
 
     event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
         with_user_id("1234").\
-        with_user_traits(UserTraits("Your Name", "name@gmail.com")).\
+        with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).\
         with_context(context).\
         with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
         build()
