@@ -17,8 +17,8 @@ class EventOptionsBuilder(object):
         self.event_options.user_traits = user_traits
         return self
 
-    def with_user(self, name, email, created_at=None):
-        self.event_options.user_traits = UserTraits(name, email, created_at)
+    def with_user(self, name, email, phone=None, created_at=None):
+        self.event_options.user_traits = UserTraits(name, email, phone, created_at)
         return self
 
     def with_context(self, context):

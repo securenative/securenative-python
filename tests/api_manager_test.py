@@ -27,7 +27,7 @@ class ApiManagerTest(unittest.TestCase):
 
         self.event_options = EventOptionsBuilder(EventTypes.LOG_IN). \
             with_user_id("USER_ID"). \
-            with_user_traits(UserTraits("USER_NAME", "USER_EMAIL")). \
+            with_user_traits(UserTraits("USER_NAME", "USER_EMAIL", "+12012673412")). \
             with_context(self.context). \
             with_properties({"prop1": "CUSTOM_PARAM_VALUE",
                              "prop2": True,

@@ -17,7 +17,7 @@ class SampleEvent(object):
         self.timestamp = datetime.now().strftime("%Y-%d-%dT%H:%M:%S.%fZ")
         self.rid = "432532"
         self.user_id = "1"
-        self.user_traits = UserTraits("some user", "email@securenative.com")
+        self.user_traits = UserTraits("some user", "email@securenative.com", "+12012673412")
         self.request = RequestContext()
         self.properties = []
 
