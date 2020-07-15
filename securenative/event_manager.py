@@ -3,7 +3,6 @@ import threading
 import time
 
 from securenative.config.securenative_options import SecureNativeOptions
-from securenative.exceptions.securenative_http_exception import SecureNativeHttpException
 from securenative.http.securenative_http_client import SecureNativeHttpClient
 from securenative.logger import Logger
 
