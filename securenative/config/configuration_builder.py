@@ -59,6 +59,9 @@ class ConfigurationBuilder(object):
         self.fail_over_strategy = fail_over_strategy
         return self
 
+    def build(self):
+        return self
+
     @staticmethod
     def get_default_securenative_options():
         return SecureNativeOptions()
