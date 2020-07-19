@@ -62,11 +62,7 @@ securenative = SecureNative.init_with_api_key("YOUR_API_KEY")
 from securenative.securenative import SecureNative
 
 
-securenative = SecureNative.init_with_options(SecureNative.config_builder()
-                                        .with_api_key("API_KEY")
-                                        .with_max_events(10)
-                                        .with_log_level("ERROR")
-                                        .build())
+securenative = SecureNative.init_with_options(SecureNative.config_builder().with_api_key("API_KEY").with_max_events(10).with_log_level("ERROR"))
 ```
 
 ## Getting SecureNative instance
