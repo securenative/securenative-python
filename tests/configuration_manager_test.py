@@ -1,5 +1,6 @@
 import configparser
 import os
+import platform
 import unittest
 
 from securenative.config.configuration_manager import ConfigurationManager
@@ -27,6 +28,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         with open(self.config_file_path, "w") as configfile:
             config.write(configfile)
 
+    @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_parse_config_file_correctly(self):
         try:
             os.remove(self.config_file_path)
@@ -72,6 +74,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertEqual(options.max_events, "100")
         self.assertEqual(options.timeout, "1500")
 
+    @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_ignore_unknown_config_in_properties_file(self):
         try:
             os.remove(self.config_file_path)
@@ -100,6 +103,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertIsNotNone(options)
         self.assertEqual(options.timeout, "1500")
 
+    @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_handle_invalid_config_file(self):
         try:
             os.remove(self.config_file_path)
@@ -124,6 +128,7 @@ class ConfigurationManagerTest(unittest.TestCase):
 
         self.assertIsNotNone(options)
 
+    @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def ignore_invalid_config_file_entries(self):
         try:
             os.remove(self.config_file_path)
@@ -223,6 +228,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertEqual(options.log_level, "Debug")
         self.assertEqual(options.fail_over_strategy, FailOverStrategy.FAIL_CLOSED.value)
 
+    @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_default_values_for_invalid_enum_config_props(self):
         try:
             os.remove(self.config_file_path)
