@@ -159,6 +159,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertIsNotNone(options)
         self.assertEqual(options.fail_over_strategy, FailOverStrategy.FAIL_OPEN)
 
+    @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_load_default_config(self):
         try:
             os.remove(self.config_file_path)
@@ -189,6 +190,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertEqual(options.log_level, "CRITICAL")
         self.assertEqual(options.fail_over_strategy, FailOverStrategy.FAIL_OPEN.value)
 
+    @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_get_config_from_env_variables(self):
         try:
             os.remove(self.config_file_path)
