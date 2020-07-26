@@ -2,4 +2,4 @@ class VersionUtils(object):
 
     @staticmethod
     def get_version():
-        return "0.2.3"
+        return "0.2.4"

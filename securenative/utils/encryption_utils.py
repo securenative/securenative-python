@@ -17,9 +17,9 @@ class EncryptionUtils(object):
         try:
             key = cipher_key[:cls.KEY_SIZE]
             iv = Random.new().read(AES.block_size)
-            cipher = AES.new(key, AES.MODE_CBC, iv)
+            cipher = AES.new(key.encode("utf8"), AES.MODE_CBC, iv)
             raw = str(cls._pad(text))
-            return hexlify(iv + cipher.encrypt(raw))
+            return hexlify(iv + cipher.encrypt(raw.encode("utf8")))
         except Exception as e:
             Logger.error("Could not encrypt text {}; {}".format(text, e))
             return None
@@ -31,7 +31,7 @@ class EncryptionUtils(object):
             content = unhexlify(encrypted)
             iv = content[:cls.BLOCK_SIZE]
             cipher_text = content[cls.BLOCK_SIZE:]
-            aes = AES.new(key, AES.MODE_CBC, iv)
+            aes = AES.new(key.encode("utf8"), AES.MODE_CBC, iv)
             rv = aes.decrypt(cipher_text).decode("utf-8").strip()
             secret = json.loads(rv)
             return ClientToken(secret.get("cid"), secret.get("vid"), secret.get("fp"))
