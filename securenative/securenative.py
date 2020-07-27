@@ -54,8 +54,8 @@ class SecureNative:
             raise SecureNativeSDKException(u'This SDK was already initialized.')
 
     @classmethod
-    def init(cls):
-        options = ConfigurationManager.load_config()
+    def init(cls, resource_path=None):
+        options = ConfigurationManager.load_config(resource_path)
         return cls.init_with_options(options)
 
     @classmethod

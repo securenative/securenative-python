@@ -23,7 +23,7 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=[
         "requests",
-        "pycrypto",
+        "pycryptodome",
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',

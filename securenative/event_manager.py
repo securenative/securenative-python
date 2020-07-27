@@ -129,23 +129,23 @@ class EventManager:
     def serialize(obj):
         return {
             "rid": obj.rid,
-            "eventType": obj.event_type,
+            "eventType": obj.event_type if isinstance(obj.event_type, str) else obj.event_type.value,
             "userId": obj.user_id,
             "userTraits": {
-                "name": obj.user_traits.name,
-                "email": obj.user_traits.email,
-                "phone": obj.user_traits.phone,
-                "createdAt": obj.user_traits.created_at,
+                "name": obj.user_traits.name if obj.user_traits else "",
+                "email": obj.user_traits.email if obj.user_traits else "",
+                "phone": obj.user_traits.phone if obj.user_traits else "",
+                "createdAt": obj.user_traits.created_at if obj.user_traits else "",
             },
             "request": {
-                "cid": obj.request.cid,
-                "vid": obj.request.vid,
-                "fp": obj.request.fp,
-                "ip": obj.request.ip,
-                "remoteIp": obj.request.remote_ip,
-                "method": obj.request.method,
-                "url": obj.request.url,
-                "headers": obj.request.headers
+                "cid": obj.request.cid if obj.request else "",
+                "vid": obj.request.vid if obj.request else "",
+                "fp": obj.request.fp if obj.request else "",
+                "ip": obj.request.ip if obj.request else "",
+                "remoteIp": obj.request.remote_ip if obj.request else "",
+                "method": obj.request.method if obj.request else "",
+                "url": obj.request.url if obj.request else "",
+                "headers": obj.request.headers if obj.request else None
             },
             "timestamp": obj.timestamp,
             "properties": obj.properties,

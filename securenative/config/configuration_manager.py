@@ -1,7 +1,8 @@
 import os
-from configparser import ConfigParser, NoSectionError
+from configparser import ConfigParser
 
 from securenative.config.configuration_builder import ConfigurationBuilder
+from securenative.exceptions.securenative_config_exception import SecureNativeConfigException
 
 
 class ConfigurationManager(object):
@@ -11,7 +12,10 @@ class ConfigurationManager(object):
 
     @classmethod
     def read_resource_file(cls, resource_path):
-        cls.config.read(resource_path)
+        try:
+            cls.config.read(resource_path)
+        except Exception as e:
+            raise SecureNativeConfigException("Invalid config file; %s", e)
 
         properties = {}
         for key, value in cls.config.defaults().items():
@@ -41,11 +45,10 @@ class ConfigurationManager(object):
         return default
 
     @classmethod
-    def load_config(cls):
+    def load_config(cls, resource_path):
         options = ConfigurationBuilder().get_default_securenative_options()
 
-        resource_path = cls.DEFAULT_CONFIG_FILE
-        if os.environ.get(cls.CUSTOM_CONFIG_FILE_ENV_NAME):
+        if not resource_path:
             resource_path = os.environ.get(cls.CUSTOM_CONFIG_FILE_ENV_NAME)
 
         properties = cls.read_resource_file(resource_path)

@@ -46,7 +46,11 @@ SecureNative can automatically load your config from *securenative.ini* file or 
 from securenative.securenative import SecureNative
 
 
+# 1. Config file path is given by environment variable 
 securenative = SecureNative.init()
+
+# 2. Config file path is specified directly
+securenative = SecureNative.init('path/to/securenative.ini')
 ```
 ### Option 2: Initialize via API Key
 
@@ -88,18 +92,8 @@ from securenative.models.user_traits import UserTraits
 
 securenative = SecureNative.get_instance()
 
-context = SecureNative.context_builder().\
-        with_ip("127.0.0.1").\
-        with_client_token("SECURED_CLIENT_TOKEN").\
-        with_headers({"user-agent", "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"}).\
-        build()
-
-event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
-with_user_id("1234").\
-        with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).\
-        with_context(context).\
-        with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
-        build()
+context = SecureNative.context_builder().with_ip("127.0.0.1").with_client_token("SECURED_CLIENT_TOKEN").with_headers({"user-agent", "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"}).build()
+event_options = EventOptionsBuilder(EventTypes.LOG_IN).with_user_id("1234").with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).with_context(context).with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).build()
 
 securenative.track(event_options)
  ```
@@ -115,14 +109,9 @@ from securenative.models.user_traits import UserTraits
 
 def track(request):
     securenative = SecureNative.get_instance()
-    context = SecureNative.context_builder().from_http_request(request).build()
 
-    event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
-        with_user_id("1234").\
-        with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).\
-        with_context(context).\
-        with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
-        build()
+    context = SecureNative.context_builder().from_http_request(request).build()
+    event_options = EventOptionsBuilder(EventTypes.LOG_IN).with_user_id("1234").with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).with_context(context).with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).build()
     
     securenative.track(event_options)
 ```
@@ -142,12 +131,7 @@ def track(request):
     securenative = SecureNative.get_instance()
     context = SecureNative.context_builder().from_http_request(request).build()
 
-    event_options = EventOptionsBuilder(EventTypes.LOG_IN).\
-        with_user_id("1234").\
-        with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).\
-        with_context(context).\
-        with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).\
-        build()
+    event_options = EventOptionsBuilder(EventTypes.LOG_IN).with_user_id("1234").with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).with_context(context).with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).build()
     
     verify_result = securenative.verify(event_options)
     verify_result.risk_level  # Low, Medium, High
