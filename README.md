@@ -46,7 +46,11 @@ SecureNative can automatically load your config from *securenative.ini* file or 
 from securenative.securenative import SecureNative
 
 
+# 1. Config file path is given by environment variable 
 securenative = SecureNative.init()
+
+# 2. Config file path is specified directly
+securenative = SecureNative.init('path/to/securenative.ini')
 ```
 ### Option 2: Initialize via API Key
 
