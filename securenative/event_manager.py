@@ -129,7 +129,7 @@ class EventManager:
     def serialize(obj):
         return {
             "rid": obj.rid,
-            "eventType": obj.event_type,
+            "eventType": obj.event_type if isinstance(obj.event_type, str) else obj.event_type.value,
             "userId": obj.user_id,
             "userTraits": {
                 "name": obj.user_traits.name if obj.user_traits else "",
