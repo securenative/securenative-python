@@ -48,7 +48,7 @@ class ContextBuilder(object):
             client_token = None
 
         try:
-            headers = request.headers
+            headers = dict(request.headers)
         except Exception:
             headers = None
 
