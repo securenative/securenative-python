@@ -23,7 +23,7 @@ class ApiManager(object):
         Logger.debug("Verify event call")
         event = SDKEvent(event_options, self.options)
         try:
-            res = json.loads(self.event_manager.send_sync(event, ApiRoute.VERIFY.value, False))
+            res = json.loads(self.event_manager.send_sync(event, ApiRoute.VERIFY.value, False).text)
             return VerifyResult(res["riskLevel"], res["score"], res["triggers"])
         except Exception as e:
             Logger.debug("Failed to call verify; {}".format(e))
