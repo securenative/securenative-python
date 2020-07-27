@@ -145,7 +145,7 @@ class EventManager:
                 "remoteIp": obj.request.remote_ip if obj.request else "",
                 "method": obj.request.method if obj.request else "",
                 "url": obj.request.url if obj.request else "",
-                "headers": obj.request.headers if obj.request else None
+                "headers": dict(obj.request.headers) if obj.request else None
             },
             "timestamp": obj.timestamp,
             "properties": obj.properties,

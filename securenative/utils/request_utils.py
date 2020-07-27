@@ -4,9 +4,10 @@ class RequestUtils(object):
 
     @staticmethod
     def get_secure_header_from_request(headers):
-        if headers:
+        try:
             return headers[RequestUtils.SECURENATIVE_HEADER]
-        return []
+        except Exception:
+            return ""
 
     @staticmethod
     def get_client_ip_from_request(request):
