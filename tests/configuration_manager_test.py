@@ -61,7 +61,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         }
 
         self.create_ini_file(config)
-        options = ConfigurationManager.load_config()
+        options = ConfigurationManager.load_config(None)
 
         self.assertIsNotNone(options)
         self.assertEqual(options.api_key, "SOME_API_KEY")
@@ -98,7 +98,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         }
 
         self.create_ini_file(config)
-        options = ConfigurationManager.load_config()
+        options = ConfigurationManager.load_config(None)
 
         self.assertIsNotNone(options)
         self.assertEqual(options.timeout, "1500")
@@ -124,7 +124,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         config = {"bla": "bla"}
 
         self.create_ini_file(config)
-        options = ConfigurationManager.load_config()
+        options = ConfigurationManager.load_config(None)
 
         self.assertIsNotNone(options)
 
@@ -154,7 +154,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         }
 
         self.create_ini_file(config)
-        options = ConfigurationManager.load_config()
+        options = ConfigurationManager.load_config(None)
 
         self.assertIsNotNone(options)
         self.assertEqual(options.fail_over_strategy, FailOverStrategy.FAIL_OPEN)
@@ -177,7 +177,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         except KeyError:
             pass
 
-        options = ConfigurationManager.load_config()
+        options = ConfigurationManager.load_config(None)
 
         self.assertIsNotNone(options)
         self.assertIsNone(options.api_key)
@@ -218,7 +218,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         os.environ["SECURENATIVE_LOG_LEVEL"] = "Debug"
         os.environ["SECURENATIVE_FAILOVER_STRATEGY"] = "fail-closed"
 
-        options = ConfigurationManager.load_config()
+        options = ConfigurationManager.load_config(None)
 
         self.assertEqual(options.api_key, "SOME_ENV_API_KEY")
         self.assertEqual(options.api_url, "SOME_API_URL")
@@ -253,7 +253,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         }
 
         self.create_ini_file(config)
-        options = ConfigurationManager.load_config()
+        options = ConfigurationManager.load_config(None)
 
         self.assertIsNotNone(options)
         self.assertEqual(options.fail_over_strategy, FailOverStrategy.FAIL_OPEN.value)
