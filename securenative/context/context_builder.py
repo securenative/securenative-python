@@ -44,7 +44,7 @@ class ContextBuilder(object):
     def from_http_request(request):
         try:
             client_token = request.cookies[RequestUtils.SECURENATIVE_COOKIE]
-        except AttributeError:
+        except Exception:
             client_token = None
 
         try:
