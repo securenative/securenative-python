@@ -10,16 +10,19 @@ class RequestUtils(object):
 
     @staticmethod
     def get_client_ip_from_request(request):
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[-1].strip()
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return ip
+        try:
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[-1].strip()
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+            return ip
+        except Exception:
+            return ""
 
     @staticmethod
     def get_remote_ip_from_request(request):
         try:
             return request.raw._original_response.fp.raw._sock.getpeername()[0]
-        except AttributeError:
+        except Exception:
             return ""

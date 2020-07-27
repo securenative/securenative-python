@@ -49,7 +49,7 @@ class ContextBuilder(object):
 
         try:
             headers = request.headers
-        except AttributeError:
+        except Exception:
             headers = None
 
         if Utils.is_null_or_empty(client_token):
