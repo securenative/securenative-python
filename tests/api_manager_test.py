@@ -91,12 +91,9 @@ class ApiManagerTest(unittest.TestCase):
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/verify",
                       json={
-                          "riskLevel": "medium",
-                          "score": 0.32,
-                          "triggers": [
-                              "New IP",
-                              "New City"
-                          ]
+                          "riskLevel": "low",
+                          "score": 0,
+                          "triggers": None
                       }, status=200)
         verify_result = VerifyResult(RiskLevel.LOW, 0, None)
 
