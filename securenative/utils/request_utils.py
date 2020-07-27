@@ -19,7 +19,7 @@ class RequestUtils(object):
                 ip = request.META.get('REMOTE_ADDR')
             return ip
         except Exception:
-            return ""
+            return request.environ.get('HTTP_X_FORWARDED_FOR', request.environ.get('REMOTE_ADDR', ""))
 
     @staticmethod
     def get_remote_ip_from_request(request):
