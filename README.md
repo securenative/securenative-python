@@ -67,8 +67,7 @@ from securenative.securenative import SecureNative
 from securenative.config.securenative_options import SecureNativeOptions
 
 
-options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
-                                      api_url="https://api.securenative-stg.com/collector/api/v1")
+options = SecureNativeOptions(api_key="YOUR_API_KEY", max_events=10, log_level="ERROR")
 securenative = SecureNative.init_with_options(options)
 ```
 
