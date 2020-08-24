@@ -64,9 +64,12 @@ securenative = SecureNative.init_with_api_key("YOUR_API_KEY")
 ### Option 3: Initialize via ConfigurationBuilder
 ```python
 from securenative.securenative import SecureNative
+from securenative.config.securenative_options import SecureNativeOptions
 
 
-securenative = SecureNative.init_with_options(SecureNative.config_builder().with_api_key("API_KEY").with_max_events(10).with_log_level("ERROR").build())
+options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
+securenative = SecureNative.init_with_options(options)
 ```
 
 ## Getting SecureNative instance

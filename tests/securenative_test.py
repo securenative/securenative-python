@@ -1,6 +1,6 @@
 import unittest
 
-from securenative.config.configuration_manager import ConfigurationManager
+from securenative.config.securenative_options import SecureNativeOptions
 from securenative.enums.failover_strategy import FailOverStrategy
 from securenative.exceptions.securenative_config_exception import SecureNativeConfigException
 from securenative.exceptions.securenative_sdk_Illegal_state_exception import SecureNativeSDKIllegalStateException
@@ -16,7 +16,7 @@ class SecureNativeTest(unittest.TestCase):
 
     def test_init_sdk_without_api_key_should_throw(self):
         with self.assertRaises(SecureNativeSDKException):
-            SecureNative.init_with_options(ConfigurationManager.config_builder())
+            SecureNative.init_with_options(SecureNativeOptions())
 
     def test_init_sdk_with_empty_api_key_should_throw(self):
         with self.assertRaises(SecureNativeConfigException):
@@ -52,10 +52,9 @@ class SecureNativeTest(unittest.TestCase):
 
     def test_init_sdk_with_builder(self):
         SecureNative._flush()
-        securenative = SecureNative.init_with_options(SecureNative.config_builder().
-                                                      with_api_key("API_KEY").
-                                                      with_max_events(10).
-                                                      with_log_level("ERROR"))
+        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
+        securenative = SecureNative.init_with_options(options)
 
         options = securenative.get_options()
         self.assertEqual(options.api_key, "API_KEY")

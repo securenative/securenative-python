@@ -30,4 +30,4 @@ class SecureNativeContext(object):
 
         return SecureNativeContext(client_token, RequestUtils.get_client_ip_from_request(request),
                                    RequestUtils.get_remote_ip_from_request(request), headers, request.url,
-                                   request.method, request.body)
+                                   request.method, None)

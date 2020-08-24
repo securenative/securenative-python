@@ -4,7 +4,7 @@ from datetime import datetime
 
 import responses
 
-from securenative.config.configuration_manager import ConfigurationManager
+from securenative.config.securenative_options import SecureNativeOptions
 from securenative.event_manager import EventManager
 from securenative.models.request_context import RequestContext
 from securenative.models.user_traits import UserTraits
@@ -29,9 +29,8 @@ class EventManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_should_successfully_send_sync_event_with_status_code_200(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY",
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         res_body = "{\"data\": true}"
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/some-path/to-api",
@@ -43,9 +42,8 @@ class EventManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_should_send_sync_event_and_fail_when_status_code_401(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY",
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/some-path/to-api",
                       json={}, status=401)
@@ -57,9 +55,8 @@ class EventManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_should_send_sync_event_and_fail_when_status_code_500(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY",
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/some-path/to-api",
                       json={}, status=500)

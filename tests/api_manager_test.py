@@ -3,7 +3,7 @@ import unittest
 import responses
 
 from securenative.api_manager import ApiManager
-from securenative.config.configuration_manager import ConfigurationManager
+from securenative.config.securenative_options import SecureNativeOptions
 from securenative.context.securenative_context import SecureNativeContext
 from securenative.enums.event_types import EventTypes
 from securenative.enums.risk_level import RiskLevel
@@ -28,11 +28,8 @@ class ApiManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_track_event(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_auto_send(True). \
-            with_interval(10). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         expected = "{\"eventType\":\"sn.user.login\",\"userId\":\"USER_ID\",\"userTraits\":{" \
                    "\"name\":\"USER_NAME\",\"email\":\"USER_EMAIL\",\"createdAt\":null},\"request\":{" \
@@ -54,11 +51,8 @@ class ApiManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_securenative_invalid_options_exception(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_auto_send(True). \
-            with_interval(10). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         properties = {}
         for i in range(1, 12):
@@ -78,9 +72,8 @@ class ApiManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_verify_event(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY",
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/verify",
                       json={
