@@ -4,11 +4,10 @@ import responses
 
 from securenative.api_manager import ApiManager
 from securenative.config.configuration_manager import ConfigurationManager
-from securenative.context.context_builder import ContextBuilder
+from securenative.context.securenative_context import SecureNativeContext
 from securenative.enums.event_types import EventTypes
 from securenative.enums.risk_level import RiskLevel
 from securenative.event_manager import EventManager
-from securenative.event_options_builder import EventOptionsBuilder
 from securenative.exceptions.securenative_invalid_options_exception import SecureNativeInvalidOptionsException
 from securenative.models.event_options import EventOptions
 from securenative.models.user_traits import UserTraits
@@ -18,12 +17,8 @@ from securenative.models.verify_result import VerifyResult
 class ApiManagerTest(unittest.TestCase):
 
     def setUp(self):
-        self.context = ContextBuilder(). \
-            with_ip("127.0.0.1"). \
-            with_headers(
-            {
-                "user-agent": "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"
-            }).build()
+        self.context = SecureNativeContext(ip="127.0.0.1", headers={
+            "user-agent": "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"})
 
         self.event_options = EventOptions(EventTypes.LOG_IN, "USER_ID",
                                           UserTraits("USER_NAME", "USER_EMAIL", "+12012673412"), context=self.context,
@@ -77,8 +72,7 @@ class ApiManagerTest(unittest.TestCase):
 
         try:
             with self.assertRaises(SecureNativeInvalidOptionsException):
-                api_manager.track(EventOptionsBuilder(
-                    EventTypes.LOG_IN).with_properties(properties).build())
+                api_manager.track(EventOptions(EventTypes.LOG_IN, "User-ID"))
         finally:
             event_manager.stop_event_persist()
 
