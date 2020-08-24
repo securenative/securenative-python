@@ -143,7 +143,7 @@ from securenative.enums.event_types import EventTypes
 from securenative.models.user_traits import UserTraits
 
 
-def track(request):
+def verify(request):
     securenative = SecureNative.get_instance()
 
     context = SecureNativeContext.from_http_request(request)
