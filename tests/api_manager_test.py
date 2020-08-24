@@ -50,27 +50,6 @@ class ApiManagerTest(unittest.TestCase):
             event_manager.stop_event_persist()
 
     @responses.activate
-    def test_securenative_invalid_options_exception(self):
-        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
-                                      api_url="https://api.securenative-stg.com/collector/api/v1")
-
-        properties = {}
-        for i in range(1, 12):
-            properties[i] = i
-
-        responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/track",
-                      json={}, status=200)
-        event_manager = EventManager(options)
-        event_manager.start_event_persist()
-        api_manager = ApiManager(event_manager, options)
-
-        try:
-            with self.assertRaises(SecureNativeInvalidOptionsException):
-                api_manager.track(EventOptions(EventTypes.LOG_IN, "User-ID"))
-        finally:
-            event_manager.stop_event_persist()
-
-    @responses.activate
     def test_verify_event(self):
         options = SecureNativeOptions(api_key="YOUR_API_KEY",
                                       api_url="https://api.securenative-stg.com/collector/api/v1")

@@ -15,3 +15,10 @@ class SDKEventTest(unittest.TestCase):
             options = SecureNativeOptions()
 
             SDKEvent(event_options, options)
+
+    def test_creating_event_without_event_type_throws(self):
+        with self.assertRaises(SecureNativeInvalidOptionsException):
+            event_options = EventOptions(None, "1234")
+            options = SecureNativeOptions()
+
+            SDKEvent(event_options, options)

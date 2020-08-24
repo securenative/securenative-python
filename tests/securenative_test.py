@@ -50,9 +50,9 @@ class SecureNativeTest(unittest.TestCase):
 
         self.assertEqual(securenative, SecureNative.get_instance())
 
-    def test_init_sdk_with_builder(self):
+    def test_init_sdk_with_options(self):
         SecureNative._flush()
-        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
+        options = SecureNativeOptions(api_key="API_KEY", log_level="ERROR", max_events=10,
                                       api_url="https://api.securenative-stg.com/collector/api/v1")
         securenative = SecureNative.init_with_options(options)
 

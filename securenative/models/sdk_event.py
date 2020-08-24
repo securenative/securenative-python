@@ -14,6 +14,9 @@ class SDKEvent(object):
         if event_options.user_id is None or len(event_options.user_id) <= 0 or event_options.user_id == "":
             raise SecureNativeInvalidOptionsException("Invalid event structure; User Id is missing")
 
+        if event_options.event is None or len(event_options.event.value) <= 0 or event_options.event.value == "":
+            raise SecureNativeInvalidOptionsException("Invalid event structure; Event Type is missing")
+
         if event_options.context is not None:
             self.context = event_options.context
         else:
