@@ -1,6 +1,7 @@
 import uuid
 
 from securenative.context.context_builder import ContextBuilder
+from securenative.exceptions.securenative_invalid_options_exception import SecureNativeInvalidOptionsException
 from securenative.models.request_context import RequestContextBuilder
 from securenative.models.user_traits import UserTraits
 from securenative.utils.date_utils import DateUtils
@@ -10,6 +11,9 @@ from securenative.utils.encryption_utils import EncryptionUtils
 class SDKEvent(object):
 
     def __init__(self, event_options, securenative_options):
+        if event_options.user_id is None or len(event_options.user_id) <=0 or event_options.user_id == "":
+            raise SecureNativeInvalidOptionsException("Invalid event structure; User Id is missing")
+
         if event_options.context is not None:
             self.context = event_options.context
         else:
@@ -32,7 +36,7 @@ class SDKEvent(object):
 
         self.rid = str(uuid.uuid4())
         self.event_type = event_options.event if event_options.event else ""
-        self.user_id = event_options.user_id if event_options.user_id else ""
+        self.user_id = event_options.user_id
         self.user_traits = user_traits
         self.request = RequestContextBuilder() \
             .with_cid(client_token.cid if client_token else "") \
