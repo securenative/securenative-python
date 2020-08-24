@@ -64,9 +64,12 @@ securenative = SecureNative.init_with_api_key("YOUR_API_KEY")
 ### Option 3: Initialize via ConfigurationBuilder
 ```python
 from securenative.securenative import SecureNative
+from securenative.config.securenative_options import SecureNativeOptions
 
 
-securenative = SecureNative.init_with_options(SecureNative.config_builder().with_api_key("API_KEY").with_max_events(10).with_log_level("ERROR").build())
+options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
+securenative = SecureNative.init_with_options(options)
 ```
 
 ## Getting SecureNative instance
@@ -75,7 +78,7 @@ Once initialized, sdk will create a singleton instance which you can get:
 from securenative.securenative import SecureNative
 
 
-secureNative = SecureNative.get_instance()
+securenative = SecureNative.get_instance()
 ```
 
 ## Tracking events
@@ -85,15 +88,22 @@ instance. Make sure you build event with the EventBuilder:
 
  ```python
 from securenative.securenative import SecureNative
-from securenative.event_options_builder import EventOptionsBuilder
+from securenative.context.securenative_context import SecureNativeContext
+from securenative.models.event_options import EventOptions
 from securenative.enums.event_types import EventTypes
 from securenative.models.user_traits import UserTraits
 
 
 securenative = SecureNative.get_instance()
 
-context = SecureNative.context_builder().with_ip("127.0.0.1").with_client_token("SECURED_CLIENT_TOKEN").with_headers({"user-agent": "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"}).build()
-event_options = EventOptionsBuilder(EventTypes.LOG_IN).with_user_id("1234").with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).with_context(context).with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).build()
+context = SecureNativeContext(client_token="SECURE_CLIENT_TOKEN",
+                                ip="127.0.0.1", 
+                                headers={"user-agent": "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"})
+event_options = EventOptions(event=EventTypes.LOG_IN,
+                                user_id="1234",
+                                user_traits=UserTraits("Your Name", "name@gmail.com", "+1234567890"),
+                                context=context,
+                                properties={"custom_param1": "CUSTOM_PARAM_VALUE", "custom_param2": True, "custom_param3": 3})
 
 securenative.track(event_options)
  ```
@@ -102,7 +112,8 @@ You can also create request context from requests:
 
 ```python
 from securenative.securenative import SecureNative
-from securenative.event_options_builder import EventOptionsBuilder
+from securenative.context.securenative_context import SecureNativeContext
+from securenative.models.event_options import EventOptions
 from securenative.enums.event_types import EventTypes
 from securenative.models.user_traits import UserTraits
 
@@ -110,8 +121,12 @@ from securenative.models.user_traits import UserTraits
 def track(request):
     securenative = SecureNative.get_instance()
 
-    context = SecureNative.context_builder().from_http_request(request).build()
-    event_options = EventOptionsBuilder(EventTypes.LOG_IN).with_user_id("1234").with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).with_context(context).with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).build()
+    context = SecureNativeContext.from_http_request(request)
+    event_options = EventOptions(event=EventTypes.LOG_IN,
+                                user_id="1234",
+                                user_traits=UserTraits("Your Name", "name@gmail.com", "+1234567890"),
+                                context=context,
+                                properties={"custom_param1": "CUSTOM_PARAM_VALUE", "custom_param2": True, "custom_param3": 3})
     
     securenative.track(event_options)
 ```
@@ -122,16 +137,21 @@ def track(request):
 
 ```python
 from securenative.securenative import SecureNative
-from securenative.event_options_builder import EventOptionsBuilder
+from securenative.models.event_options import EventOptions
+from securenative.context.securenative_context import SecureNativeContext
 from securenative.enums.event_types import EventTypes
 from securenative.models.user_traits import UserTraits
 
 
 def track(request):
     securenative = SecureNative.get_instance()
-    context = SecureNative.context_builder().from_http_request(request).build()
 
-    event_options = EventOptionsBuilder(EventTypes.LOG_IN).with_user_id("1234").with_user_traits(UserTraits("Your Name", "name@gmail.com", "+1234567890")).with_context(context).with_properties({"prop1": "CUSTOM_PARAM_VALUE", "prop2": True, "prop3": 3}).build()
+    context = SecureNativeContext.from_http_request(request)
+    event_options = EventOptions(event=EventTypes.LOG_IN,
+                                user_id="1234",
+                                user_traits=UserTraits("Your Name", "name@gmail.com", "+1234567890"),
+                                context=context,
+                                properties={"custom_param1": "CUSTOM_PARAM_VALUE", "custom_param2": True, "custom_param3": 3})
     
     verify_result = securenative.verify(event_options)
     verify_result.risk_level  # Low, Medium, High

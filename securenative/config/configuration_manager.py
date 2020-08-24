@@ -1,7 +1,7 @@
 import os
 from configparser import ConfigParser
 
-from securenative.config.configuration_builder import ConfigurationBuilder
+from securenative.config.securenative_options import SecureNativeOptions
 from securenative.exceptions.securenative_config_exception import SecureNativeConfigException
 
 
@@ -32,10 +32,6 @@ class ConfigurationManager(object):
 
         return os.environ.get(cls.DEFAULT_CONFIG_FILE)
 
-    @staticmethod
-    def config_builder():
-        return ConfigurationBuilder.default_config_builder()
-
     @classmethod
     def _get_env_or_default(cls, properties, key, default):
         if os.environ.get(key):
@@ -46,21 +42,25 @@ class ConfigurationManager(object):
 
     @classmethod
     def load_config(cls, resource_path):
-        options = ConfigurationBuilder().get_default_securenative_options()
+        options = SecureNativeOptions()
 
         if not resource_path:
             resource_path = os.environ.get(cls.CUSTOM_CONFIG_FILE_ENV_NAME)
 
         properties = cls.read_resource_file(resource_path)
 
-        return ConfigurationBuilder(). \
-            with_api_key(cls._get_env_or_default(properties, "SECURENATIVE_API_KEY", options.api_key)). \
-            with_api_url(cls._get_env_or_default(properties, "SECURENATIVE_API_URL", options.api_url)). \
-            with_interval(cls._get_env_or_default(properties, "SECURENATIVE_INTERVAL", options.interval)). \
-            with_max_events(cls._get_env_or_default(properties, "SECURENATIVE_MAX_EVENTS", options.max_events)). \
-            with_timeout(cls._get_env_or_default(properties, "SECURENATIVE_TIMEOUT", options.timeout)). \
-            with_auto_send(cls._get_env_or_default(properties, "SECURENATIVE_AUTO_SEND", options.auto_send)). \
-            with_disable(cls._get_env_or_default(properties, "SECURENATIVE_DISABLE", options.disable)). \
-            with_log_level(cls._get_env_or_default(properties, "SECURENATIVE_LOG_LEVEL", options.log_level)). \
-            with_fail_over_strategy(cls._get_env_or_default(
-                properties, "SECURENATIVE_FAILOVER_STRATEGY", options.fail_over_strategy))
+        return SecureNativeOptions(api_key=cls._get_env_or_default(properties, "SECURENATIVE_API_KEY", options.api_key),
+                                   api_url=cls._get_env_or_default(properties, "SECURENATIVE_API_URL", options.api_url),
+                                   interval=cls._get_env_or_default(properties, "SECURENATIVE_INTERVAL",
+                                                                    options.interval),
+                                   max_events=cls._get_env_or_default(properties, "SECURENATIVE_MAX_EVENTS",
+                                                                      options.max_events),
+                                   timeout=cls._get_env_or_default(properties, "SECURENATIVE_TIMEOUT", options.timeout),
+                                   auto_send=cls._get_env_or_default(properties, "SECURENATIVE_AUTO_SEND",
+                                                                     options.auto_send),
+                                   disable=cls._get_env_or_default(properties, "SECURENATIVE_DISABLE", options.disable),
+                                   log_level=cls._get_env_or_default(properties, "SECURENATIVE_LOG_LEVEL",
+                                                                     options.log_level),
+                                   fail_over_strategy=cls._get_env_or_default(properties,
+                                                                              "SECURENATIVE_FAILOVER_STRATEGY",
+                                                                              options.fail_over_strategy))

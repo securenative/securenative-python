@@ -3,13 +3,13 @@ import unittest
 import responses
 
 from securenative.api_manager import ApiManager
-from securenative.config.configuration_manager import ConfigurationManager
-from securenative.context.context_builder import ContextBuilder
+from securenative.config.securenative_options import SecureNativeOptions
+from securenative.context.securenative_context import SecureNativeContext
 from securenative.enums.event_types import EventTypes
 from securenative.enums.risk_level import RiskLevel
 from securenative.event_manager import EventManager
-from securenative.event_options_builder import EventOptionsBuilder
 from securenative.exceptions.securenative_invalid_options_exception import SecureNativeInvalidOptionsException
+from securenative.models.event_options import EventOptions
 from securenative.models.user_traits import UserTraits
 from securenative.models.verify_result import VerifyResult
 
@@ -17,28 +17,19 @@ from securenative.models.verify_result import VerifyResult
 class ApiManagerTest(unittest.TestCase):
 
     def setUp(self):
-        self.context = ContextBuilder(). \
-            with_ip("127.0.0.1"). \
-            with_headers(
-            {
-                "user-agent": "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"
-            }).build()
+        self.context = SecureNativeContext(ip="127.0.0.1", headers={
+            "user-agent": "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405"})
 
-        self.event_options = EventOptionsBuilder(EventTypes.LOG_IN). \
-            with_user_id("USER_ID"). \
-            with_user_traits(UserTraits("USER_NAME", "USER_EMAIL", "+12012673412")). \
-            with_context(self.context). \
-            with_properties({"prop1": "CUSTOM_PARAM_VALUE",
-                             "prop2": True,
-                             "prop3": 3}).build()
+        self.event_options = EventOptions(EventTypes.LOG_IN, "USER_ID",
+                                          UserTraits("USER_NAME", "USER_EMAIL", "+12012673412"), context=self.context,
+                                          properties={"prop1": "CUSTOM_PARAM_VALUE",
+                                                      "prop2": True,
+                                                      "prop3": 3})
 
     @responses.activate
     def test_track_event(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_auto_send(True). \
-            with_interval(10). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, interval=10,
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         expected = "{\"eventType\":\"sn.user.login\",\"userId\":\"USER_ID\",\"userTraits\":{" \
                    "\"name\":\"USER_NAME\",\"email\":\"USER_EMAIL\",\"createdAt\":null},\"request\":{" \
@@ -59,35 +50,9 @@ class ApiManagerTest(unittest.TestCase):
             event_manager.stop_event_persist()
 
     @responses.activate
-    def test_securenative_invalid_options_exception(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_auto_send(True). \
-            with_interval(10). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
-
-        properties = {}
-        for i in range(1, 12):
-            properties[i] = i
-
-        responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/track",
-                      json={}, status=200)
-        event_manager = EventManager(options)
-        event_manager.start_event_persist()
-        api_manager = ApiManager(event_manager, options)
-
-        try:
-            with self.assertRaises(SecureNativeInvalidOptionsException):
-                api_manager.track(EventOptionsBuilder(
-                    EventTypes.LOG_IN).with_properties(properties).build())
-        finally:
-            event_manager.stop_event_persist()
-
-    @responses.activate
     def test_verify_event(self):
-        options = ConfigurationManager.config_builder(). \
-            with_api_key("YOUR_API_KEY"). \
-            with_api_url("https://api.securenative-stg.com/collector/api/v1")
+        options = SecureNativeOptions(api_key="YOUR_API_KEY",
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/verify",
                       json={

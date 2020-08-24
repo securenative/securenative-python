@@ -2,7 +2,7 @@ import unittest
 
 import requests_mock
 
-from securenative.context.context_builder import ContextBuilder
+from securenative.context.securenative_context import SecureNativeContext
 
 
 class ContextBuilderTest(unittest.TestCase):
@@ -21,7 +21,7 @@ class ContextBuilderTest(unittest.TestCase):
             request.headers = {
                 "x-securenative": "71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a"}
 
-            context = ContextBuilder.from_http_request(request).build()
+            context = SecureNativeContext.from_http_request(request)
 
             self.assertEqual(context.client_token,
                              "71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a")
@@ -45,9 +45,9 @@ class ContextBuilderTest(unittest.TestCase):
                 "REMOTE_ADDR": "51.68.201.122"
             }
             request.cookies = {"_sn":
-                                     "71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a"}
+                                   "71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a"}
 
-            context = ContextBuilder.from_http_request(request).build()
+            context = SecureNativeContext.from_http_request(request)
 
             self.assertEqual(context.client_token,
                              "71532c1fad2c7f56118f7969e401f3cf080239140d208e7934e6a530818c37e544a0c2330a487bcc6fe4f662a57f265a3ed9f37871e80529128a5e4f2ca02db0fb975ded401398f698f19bb0cafd68a239c6caff99f6f105286ab695eaf3477365bdef524f5d70d9be1d1d474506b433aed05d7ed9a435eeca357de57817b37c638b6bb417ffb101eaf856987615a77a")
@@ -58,7 +58,7 @@ class ContextBuilderTest(unittest.TestCase):
             self.assertIsNone(context.body)
 
     def test_create_default_context_builder(self):
-        context = ContextBuilder.default_context_builder().build()
+        context = SecureNativeContext()
 
         self.assertIsNone(context.client_token)
         self.assertIsNone(context.ip)
@@ -69,15 +69,8 @@ class ContextBuilderTest(unittest.TestCase):
         self.assertIsNone(context.body)
 
     def test_create_custom_context_with_context_builder(self):
-        context = ContextBuilder.default_context_builder(). \
-            with_url("/some-url"). \
-            with_client_token("SECRET_TOKEN"). \
-            with_ip("10.0.0.0"). \
-            with_body("{ \"name\": \"YOUR_NAME\" }"). \
-            with_method("Get"). \
-            with_remote_ip("10.0.0.1"). \
-            with_headers({"header1": "value1"}). \
-            build()
+        context = SecureNativeContext("SECRET_TOKEN", "10.0.0.0", "10.0.0.1", {"header1": "value1"}, "/some-url", "Get",
+                                      "{ \"name\": \"YOUR_NAME\" }")
 
         self.assertEqual(context.url, "/some-url")
         self.assertEqual(context.client_token, "SECRET_TOKEN")

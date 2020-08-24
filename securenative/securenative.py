@@ -1,7 +1,6 @@
 from securenative.api_manager import ApiManager
-from securenative.config.configuration_builder import ConfigurationBuilder
 from securenative.config.configuration_manager import ConfigurationManager
-from securenative.context.context_builder import ContextBuilder
+from securenative.config.securenative_options import SecureNativeOptions
 from securenative.event_manager import EventManager
 from securenative.exceptions.securenative_config_exception import SecureNativeConfigException
 from securenative.exceptions.securenative_sdk_Illegal_state_exception import SecureNativeSDKIllegalStateException
@@ -45,8 +44,7 @@ class SecureNative:
             raise SecureNativeConfigException("You must pass your SecureNative api key")
 
         if cls._securenative is None:
-            builder = ConfigurationBuilder().default_config_builder()
-            options = builder.with_api_key(api_key)
+            options = SecureNativeOptions(api_key=api_key)
             cls._securenative = SecureNative(options)
             return cls._securenative
         else:
@@ -66,14 +64,6 @@ class SecureNative:
 
     def get_options(self):
         return self._options
-
-    @staticmethod
-    def config_builder():
-        return ConfigurationBuilder.default_config_builder()
-
-    @staticmethod
-    def context_builder():
-        return ContextBuilder.default_context_builder()
 
     def track(self, event_options):
         return self._api_manager.track(event_options)
