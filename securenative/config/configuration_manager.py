@@ -2,7 +2,7 @@ import os
 from configparser import ConfigParser
 
 from securenative.config.securenative_options import SecureNativeOptions
-from securenative.exceptions.securenative_config_exception import SecureNativeConfigException
+from securenative.logger import Logger
 
 
 class ConfigurationManager(object):
@@ -15,7 +15,7 @@ class ConfigurationManager(object):
         try:
             cls.config.read(resource_path)
         except Exception as e:
-            raise SecureNativeConfigException("Invalid config file; %s", e)
+            Logger.debug("Invalid config file; {}, using default options".format(e))
 
         properties = {}
         for key, value in cls.config.defaults().items():

@@ -76,9 +76,8 @@ class SecureNative:
     def _flush(cls):
         cls._securenative = None
 
-    @classmethod
-    def from_http_request(cls, request):
-        return SecureNativeContext.from_http_request(request, SecureNative._options)
+    def from_http_request(self, request):
+        return SecureNativeContext.from_http_request(request, self._options)
 
     def verify_request_payload(self, request):
         request_signature = request.header[SignatureUtils.SignatureHeader]

@@ -16,9 +16,10 @@ class RequestUtils(object):
                 try:
                     if request.environ.get(header) is not None:
                         return request.environ.get(header)
-                except AttributeError:
                     if request.headers[header] is not None:
                         return request.headers[header]
+                except Exception:
+                    continue
 
         try:
             x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
