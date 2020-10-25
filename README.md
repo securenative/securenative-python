@@ -119,7 +119,7 @@ from securenative.models.user_traits import UserTraits
 def track(request):
     securenative = SecureNative.get_instance()
 
-    context = SecureNative.from_http_request(request)
+    context = securenative.from_http_request(request)
     event_options = EventOptions(event=EventTypes.LOG_IN,
                                 user_id="1234",
                                 user_traits=UserTraits("Your Name", "name@gmail.com", "+1234567890"),
@@ -143,7 +143,7 @@ from securenative.models.user_traits import UserTraits
 def verify(request):
     securenative = SecureNative.get_instance()
 
-    context = SecureNative.from_http_request(request)
+    context = securenative.from_http_request(request)
     event_options = EventOptions(event=EventTypes.LOG_IN,
                                 user_id="1234",
                                 user_traits=UserTraits("Your Name", "name@gmail.com", "+1234567890"),
