@@ -63,4 +63,6 @@ class ConfigurationManager(object):
                                                                      options.log_level),
                                    fail_over_strategy=cls._get_env_or_default(properties,
                                                                               "SECURENATIVE_FAILOVER_STRATEGY",
-                                                                              options.fail_over_strategy))
+                                                                              options.fail_over_strategy),
+                                   proxy_headers=cls._get_env_or_default(properties, "SECURENATIVE_PROXY_HEADERS",
+                                                                         options.proxy_headers))

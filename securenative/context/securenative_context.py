@@ -14,7 +14,7 @@ class SecureNativeContext(object):
         self.body = body
 
     @staticmethod
-    def from_http_request(request):
+    def from_http_request(request, options):
         try:
             client_token = request.cookies[RequestUtils.SECURENATIVE_COOKIE]
         except Exception:
@@ -28,6 +28,6 @@ class SecureNativeContext(object):
         if Utils.is_null_or_empty(client_token):
             client_token = RequestUtils.get_secure_header_from_request(headers)
 
-        return SecureNativeContext(client_token, RequestUtils.get_client_ip_from_request(request),
+        return SecureNativeContext(client_token, RequestUtils.get_client_ip_from_request(request, options),
                                    RequestUtils.get_remote_ip_from_request(request), headers, request.url,
                                    request.method, None)

@@ -1,6 +1,7 @@
 from securenative.api_manager import ApiManager
 from securenative.config.configuration_manager import ConfigurationManager
 from securenative.config.securenative_options import SecureNativeOptions
+from securenative.context.securenative_context import SecureNativeContext
 from securenative.event_manager import EventManager
 from securenative.exceptions.securenative_config_exception import SecureNativeConfigException
 from securenative.exceptions.securenative_sdk_Illegal_state_exception import SecureNativeSDKIllegalStateException
@@ -74,6 +75,10 @@ class SecureNative:
     @classmethod
     def _flush(cls):
         cls._securenative = None
+
+    @classmethod
+    def from_http_request(cls, request):
+        return SecureNativeContext.from_http_request(request, SecureNative._options)
 
     def verify_request_payload(self, request):
         request_signature = request.header[SignatureUtils.SignatureHeader]

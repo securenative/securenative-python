@@ -1,7 +1,5 @@
 import unittest
 
-import pytest
-
 from securenative.utils.encryption_utils import EncryptionUtils
 
 
@@ -19,10 +17,3 @@ class EncryptionUtilsTest(unittest.TestCase):
 
         self.assertEqual(result.cid, self.CID)
         self.assertEqual(result.fp, self.FP)
-
-    @pytest.mark.skip("Differences in crypto version fails this test when in reality it's passing")
-    def test_encrypt(self):
-        result = EncryptionUtils.encrypt(self.PAYLOAD, self.SECRET_KEY)
-
-        self.assertIsNotNone(result)
-        self.assertGreater(len(self.PAYLOAD), len(result))
