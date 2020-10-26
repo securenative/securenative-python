@@ -111,7 +111,6 @@ You can also create request context from requests:
 
 ```python
 from securenative.securenative import SecureNative
-from securenative.context.securenative_context import SecureNativeContext
 from securenative.models.event_options import EventOptions
 from securenative.enums.event_types import EventTypes
 from securenative.models.user_traits import UserTraits
@@ -120,7 +119,7 @@ from securenative.models.user_traits import UserTraits
 def track(request):
     securenative = SecureNative.get_instance()
 
-    context = SecureNativeContext.from_http_request(request)
+    context = securenative.from_http_request(request)
     event_options = EventOptions(event=EventTypes.LOG_IN,
                                 user_id="1234",
                                 user_traits=UserTraits("Your Name", "name@gmail.com", "+1234567890"),
@@ -137,7 +136,6 @@ def track(request):
 ```python
 from securenative.securenative import SecureNative
 from securenative.models.event_options import EventOptions
-from securenative.context.securenative_context import SecureNativeContext
 from securenative.enums.event_types import EventTypes
 from securenative.models.user_traits import UserTraits
 
@@ -145,7 +143,7 @@ from securenative.models.user_traits import UserTraits
 def verify(request):
     securenative = SecureNative.get_instance()
 
-    context = SecureNativeContext.from_http_request(request)
+    context = securenative.from_http_request(request)
     event_options = EventOptions(event=EventTypes.LOG_IN,
                                 user_id="1234",
                                 user_traits=UserTraits("Your Name", "name@gmail.com", "+1234567890"),
@@ -173,3 +171,26 @@ def webhook_endpoint(request):
     is_verified = securenative.verify_request_payload(request)
  ```
     
+## Extract proxy headers from Cloudflare
+
+You can specify custom header keys to allow extraction of client ip from different providers.
+This example demonstrates the usage of proxy headers for ip extraction from Cloudflare.
+
+### Option 1: Using config file
+```ini
+SECURENATIVE_API_KEY: dsbe27fh3437r2yd326fg3fdg36f43
+SECURENATIVE_PROXY_HEADERS: ["CF-Connecting-IP"]
+```
+
+Initialize sdk as shown above.
+
+### Options 2: Using ConfigurationBuilder
+
+```python
+from securenative.securenative import SecureNative
+from securenative.config.securenative_options import SecureNativeOptions
+
+
+options = SecureNativeOptions(api_key="YOUR_API_KEY", max_events=10, log_level="ERROR", proxy_headers=['CF-Connecting-IP'])
+securenative = SecureNative.init_with_options(options)
+```

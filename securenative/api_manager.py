@@ -23,10 +23,10 @@ class ApiManager(object):
         Logger.debug("Verify event call")
         event = SDKEvent(event_options, self.options)
         try:
-            res = json.loads(self.event_manager.send_sync(event, ApiRoute.VERIFY.value, False).text)
+            res = json.loads(self.event_manager.send_sync(event, ApiRoute.VERIFY.value).text)
             return VerifyResult(res["riskLevel"], res["score"], res["triggers"])
         except Exception as e:
             Logger.debug("Failed to call verify; {}".format(e))
             if self.options.fail_over_strategy is FailOverStrategy.FAIL_OPEN.value:
-                return VerifyResult(RiskLevel.LOW.value, 0, None)
-            return VerifyResult(RiskLevel.HIGH.value, 1, None)
+                return VerifyResult(RiskLevel.LOW.value, 0, [])
+            return VerifyResult(RiskLevel.HIGH.value, 1, [])
