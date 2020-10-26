@@ -28,5 +28,5 @@ class ApiManager(object):
         except Exception as e:
             Logger.debug("Failed to call verify; {}".format(e))
             if self.options.fail_over_strategy is FailOverStrategy.FAIL_OPEN.value:
-                return VerifyResult(RiskLevel.LOW.value, 0, None)
-            return VerifyResult(RiskLevel.HIGH.value, 1, None)
+                return VerifyResult(RiskLevel.LOW.value, 0, [])
+            return VerifyResult(RiskLevel.HIGH.value, 1, [])

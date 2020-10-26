@@ -50,7 +50,7 @@ class ApiManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_should_timeout_on_post(self):
-        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, timeout=-1,
+        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, timeout=0,
                                       api_url="https://api.securenative-stg.com/collector/api/v1")
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/verify",
@@ -60,7 +60,7 @@ class ApiManagerTest(unittest.TestCase):
         event_manager.start_event_persist()
         api_manager = ApiManager(event_manager, options)
 
-        verify_result = VerifyResult(RiskLevel.LOW.value, 0, None)
+        verify_result = VerifyResult(RiskLevel.LOW.value, 0, [])
         res = api_manager.verify(self.event_options)
 
         self.assertEqual(res.risk_level, verify_result.risk_level)
