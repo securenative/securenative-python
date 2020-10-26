@@ -1,4 +1,5 @@
 import requests
+from requests import Timeout
 
 from securenative.utils.version_utils import VersionUtils
 
@@ -24,4 +25,8 @@ class SecureNativeHttpClient(object):
 
     def post(self, path, body):
         url = "{}/{}".format(self.options.api_url, path)
-        return requests.post(url=url, data=body, headers=self._headers())
+        try:
+            res = requests.post(url=url, data=body, headers=self._headers(), timeout=self.options.timeout / 1000)
+            return res
+        except Timeout:
+            return None

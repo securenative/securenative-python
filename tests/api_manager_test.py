@@ -8,7 +8,6 @@ from securenative.context.securenative_context import SecureNativeContext
 from securenative.enums.event_types import EventTypes
 from securenative.enums.risk_level import RiskLevel
 from securenative.event_manager import EventManager
-from securenative.exceptions.securenative_invalid_options_exception import SecureNativeInvalidOptionsException
 from securenative.models.event_options import EventOptions
 from securenative.models.user_traits import UserTraits
 from securenative.models.verify_result import VerifyResult
@@ -48,6 +47,25 @@ class ApiManagerTest(unittest.TestCase):
             api_manager.track(self.event_options)
         finally:
             event_manager.stop_event_persist()
+
+    @responses.activate
+    def test_should_timeout_on_post(self):
+        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, timeout=-1,
+                                      api_url="https://api.securenative-stg.com/collector/api/v1")
+
+        responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/verify",
+                      json={"event": "SOME_EVENT_NAME"}, status=408)
+
+        event_manager = EventManager(options)
+        event_manager.start_event_persist()
+        api_manager = ApiManager(event_manager, options)
+
+        verify_result = VerifyResult(RiskLevel.LOW.value, 0, None)
+        res = api_manager.verify(self.event_options)
+
+        self.assertEqual(res.risk_level, verify_result.risk_level)
+        self.assertEqual(res.score, verify_result.score)
+        self.assertEqual(res.triggers, verify_result.triggers)
 
     @responses.activate
     def test_verify_event(self):

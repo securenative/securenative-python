@@ -54,7 +54,7 @@ class EventManager:
         for item in self.queue:
             self.http_client.post(item.url, item.body)
 
-    def send_sync(self, event, resource_path, retry):
+    def send_sync(self, event, resource_path):
         if self.options.disable:
             Logger.warning("SDK is disabled. no operation will be performed")
             return
@@ -64,17 +64,9 @@ class EventManager:
             resource_path,
             json.dumps(EventManager.serialize(event))
         )
-        if res.status_code != 200:
-            Logger.info("SecureNative failed to call endpoint {} with event {}. adding back to queue".format(
-                resource_path, event))
-            item = QueueItem(
-                resource_path,
-                json.dumps(EventManager.serialize(event)),
-                retry
-            )
-            self.queue.append(item)
-            if self._is_queue_full():
-                self.queue = self.queue[:len(self.queue - 1)]
+        if res is None or res.status_code != 200:
+            Logger.info("SecureNative failed to call endpoint {} with event {}.".format(resource_path, event))
+
         return res
 
     def _is_queue_full(self):

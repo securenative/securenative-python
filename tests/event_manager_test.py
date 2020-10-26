@@ -37,7 +37,7 @@ class EventManagerTest(unittest.TestCase):
                       json=json.loads(res_body), status=200)
         event_manager = EventManager(options)
 
-        data = event_manager.send_sync(self.event, "some-path/to-api", False)
+        data = event_manager.send_sync(self.event, "some-path/to-api")
         self.assertEqual(res_body, data.text)
 
     @responses.activate
@@ -49,7 +49,7 @@ class EventManagerTest(unittest.TestCase):
                       json={}, status=401)
         event_manager = EventManager(options)
 
-        res = event_manager.send_sync(self.event, "some-path/to-api", False)
+        res = event_manager.send_sync(self.event, "some-path/to-api")
 
         self.assertEqual(res.status_code, 401)
 
@@ -62,6 +62,6 @@ class EventManagerTest(unittest.TestCase):
                       json={}, status=500)
         event_manager = EventManager(options)
 
-        res = event_manager.send_sync(self.event, "some-path/to-api", False)
+        res = event_manager.send_sync(self.event, "some-path/to-api")
 
         self.assertEqual(res.status_code, 500)
