@@ -40,23 +40,17 @@ class RequestUtils(object):
                 continue
 
         try:
-            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-            if x_forwarded_for:
-                ip = x_forwarded_for.split(',')[0].strip()
-            else:
-                ip = request.META.get('REMOTE_ADDR')
-
-            if ip is None or ip == "":
-                ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.environ.get('REMOTE_ADDR', "")).split(',')[0].strip()
-
-            return ip
+            for header in RequestUtils.IP_HEADERS:
+                ips = request.META.get[header].split(',')
+                return RequestUtils.get_valid_ip(ips)
         except Exception:
             return ""
 
     @staticmethod
     def get_remote_ip_from_request(request):
         try:
-            return request.raw._original_response.fp.raw._sock.getpeername()[0]
+            if len(request.raw._original_response.fp.raw._sock.getpeername()) > 0:
+                return request.raw._original_response.fp.raw._sock.getpeername()[0]
         except Exception:
             return ""
 
