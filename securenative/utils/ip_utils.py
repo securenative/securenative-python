@@ -1,6 +1,6 @@
 import ipaddress
 import re
-import socket
+from IPy import IP
 
 
 class IpUtils(object):
@@ -17,21 +17,16 @@ class IpUtils(object):
 
     @staticmethod
     def is_valid_public_ip(ip_address):
-        try:
-            socket.inet_aton(ip_address)
-        except socket.error:
+        ip = ipaddress.ip_address(ip_address)
+
+        if ip.version is 4:
+            if not ip.is_loopback and not ip.is_reserved and not ip.is_unspecified and IP(ip_address).iptype() is not "PRIVATE":
+                return True
             return False
 
-        ip = ipaddress.IPv4Address(ip_address)
-        if ip.is_loopback \
-                or not ip.is_global \
-                or ip.is_private \
-                or ip.is_link_local \
-                or ip.is_multicast \
-                or ip.is_reserved \
-                or ip.is_unspecified:
-            return False
-        return True
+        if not ip.is_unspecified and IP(ip_address).iptype() is not "PRIVATE":
+            return True
+        return False
 
     @staticmethod
     def is_loop_back(ip_address):

@@ -1,6 +1,10 @@
+from securenative.utils.ip_utils import IpUtils
+
+
 class RequestUtils(object):
     SECURENATIVE_COOKIE = "_sn"
     SECURENATIVE_HEADER = "x-securenative"
+    IP_HEADERS = ["HTTP_X_FORWARDED_FOR", "X_FORWARDED_FOR", "REMOTE_ADDR", "x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"]
 
     @staticmethod
     def get_secure_header_from_request(headers):
@@ -15,33 +19,60 @@ class RequestUtils(object):
             for header in options.proxy_headers:
                 try:
                     if request.environ.get(header) is not None:
-                        return request.environ.get(header)
+                        ips = request.environ.get(header).split(',')
+                        return RequestUtils.get_valid_ip(ips)
                     if request.headers[header] is not None:
-                        return request.headers[header]
+                        ips = request.headers[header].split(',')
+                        return RequestUtils.get_valid_ip(ips)
                 except Exception:
                     try:
                         if request.headers[header] is not None:
-                            return request.headers[header]
+                            ips = request.headers[header].split(',')
+                            return RequestUtils.get_valid_ip(ips)
                     except Exception:
                         continue
 
-        try:
-            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-            if x_forwarded_for:
-                ip = x_forwarded_for.split(',')[-1].strip()
-            else:
-                ip = request.META.get('REMOTE_ADDR')
+        for header in RequestUtils.IP_HEADERS:
+            try:
+                ips = request.headers.get(header).split(',')
+                return RequestUtils.get_valid_ip(ips)
+            except Exception:
+                continue
 
-            if ip is None or ip == "":
-                ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.environ.get('REMOTE_ADDR', ""))
+        for header in RequestUtils.IP_HEADERS:
+            try:
+                ips = request.META.get(header).split(',')
+                return RequestUtils.get_valid_ip(ips)
+            except Exception:
+                continue
 
-            return ip
-        except Exception:
-            return ""
+        return ""
 
     @staticmethod
     def get_remote_ip_from_request(request):
         try:
-            return request.raw._original_response.fp.raw._sock.getpeername()[0]
+            if len(request.raw._original_response.fp.raw._sock.getpeername()) > 0:
+                return request.raw._original_response.fp.raw._sock.getpeername()[0]
         except Exception:
             return ""
+
+    @staticmethod
+    def get_valid_ip(ips):
+        if isinstance(ips, list):
+            for ip in ips:
+                ip = ip.strip()
+                if IpUtils.is_valid_public_ip(ip):
+                    return ip
+
+            # No public ip found check for no loopback
+            for ip in ips:
+                ip = ip.strip()
+                if not IpUtils.is_loop_back(ip):
+                    return ip
+
+        ip = ips.strip()
+        if IpUtils.is_valid_public_ip(ip):
+            return ip
+
+        if IpUtils.is_loop_back(ip):
+            return ip

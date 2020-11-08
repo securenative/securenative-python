@@ -7,7 +7,7 @@ from securenative.logger import Logger
 
 class ConfigurationManager(object):
     DEFAULT_CONFIG_FILE = "securenative.ini"
-    CUSTOM_CONFIG_FILE_ENV_NAME = "SECURENATIVE_COMFIG_FILE"
+    CUSTOM_CONFIG_FILE_ENV_NAME = "SECURENATIVE_CONFIG_FILE"
     config = ConfigParser()
 
     @classmethod
@@ -35,8 +35,12 @@ class ConfigurationManager(object):
     @classmethod
     def _get_env_or_default(cls, properties, key, default):
         if os.environ.get(key):
+            if "," in os.environ.get(key):
+                return os.environ.get(key).split(",")
             return os.environ.get(key)
         if properties.get(key):
+            if "," in properties.get(key):
+                return properties.get(key).split(",")
             return properties.get(key)
         return default
 
