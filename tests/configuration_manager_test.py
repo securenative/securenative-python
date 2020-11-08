@@ -12,8 +12,28 @@ class ConfigurationManagerTest(unittest.TestCase):
     def setUp(self):
         self.config_file_path = "/tmp/securenative.ini"
 
+    def clean_settings(self):
+        try:
+            os.remove(self.config_file_path)
+        except FileNotFoundError:
+            pass
+
+        try:
+            del os.environ["SECURENATIVE_API_KEY"]
+            del os.environ["SECURENATIVE_API_URL"]
+            del os.environ["SECURENATIVE_INTERVAL"]
+            del os.environ["SECURENATIVE_MAX_EVENTS"]
+            del os.environ["SECURENATIVE_TIMEOUT"]
+            del os.environ["SECURENATIVE_AUTO_SEND"]
+            del os.environ["SECURENATIVE_DISABLE"]
+            del os.environ["SECURENATIVE_LOG_LEVEL"]
+            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
+            del os.environ["SECURENATIVE_PROXY_HEADERS"]
+        except KeyError:
+            pass
+
     def create_ini_file(self, conf):
-        os.environ["SECURENATIVE_COMFIG_FILE"] = self.config_file_path
+        os.environ["SECURENATIVE_CONFIG_FILE"] = self.config_file_path
 
         try:
             os.remove(self.config_file_path)
@@ -30,22 +50,7 @@ class ConfigurationManagerTest(unittest.TestCase):
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_parse_config_file_correctly(self):
-        try:
-            os.remove(self.config_file_path)
-            del os.environ["SECURENATIVE_API_KEY"]
-            del os.environ["SECURENATIVE_API_URL"]
-            del os.environ["SECURENATIVE_INTERVAL"]
-            del os.environ["SECURENATIVE_MAX_EVENTS"]
-            del os.environ["SECURENATIVE_TIMEOUT"]
-            del os.environ["SECURENATIVE_AUTO_SEND"]
-            del os.environ["SECURENATIVE_DISABLE"]
-            del os.environ["SECURENATIVE_LOG_LEVEL"]
-            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
-        except FileNotFoundError:
-            pass
-        except KeyError:
-            pass
-
+        self.clean_settings()
         config = {
             "SECURENATIVE_API_KEY": "SOME_API_KEY",
             "SECURENATIVE_APP_NAME": "SOME_APP_NAME",
@@ -57,7 +62,8 @@ class ConfigurationManagerTest(unittest.TestCase):
             "SECURENATIVE_AUTO_SEND": "True",
             "SECURENATIVE_DISABLE": "False",
             "SECURENATIVE_LOG_LEVEL": "Critical",
-            "SECURENATIVE_FAILOVER_STRATEGY": "fail-closed"
+            "SECURENATIVE_FAILOVER_STRATEGY": "fail-closed",
+            "SECURENATIVE_PROXY_HEADERS": "CF-Connecting-IP,Some-Random-Ip"
         }
 
         self.create_ini_file(config)
@@ -73,25 +79,11 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertEqual(options.log_level, "Critical")
         self.assertEqual(options.max_events, "100")
         self.assertEqual(options.timeout, "1500")
+        self.assertEqual(options.proxy_headers, ["CF-Connecting-IP", "Some-Random-Ip"])
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_ignore_unknown_config_in_properties_file(self):
-        try:
-            os.remove(self.config_file_path)
-            del os.environ["SECURENATIVE_API_KEY"]
-            del os.environ["SECURENATIVE_API_URL"]
-            del os.environ["SECURENATIVE_INTERVAL"]
-            del os.environ["SECURENATIVE_MAX_EVENTS"]
-            del os.environ["SECURENATIVE_TIMEOUT"]
-            del os.environ["SECURENATIVE_AUTO_SEND"]
-            del os.environ["SECURENATIVE_DISABLE"]
-            del os.environ["SECURENATIVE_LOG_LEVEL"]
-            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
-        except FileNotFoundError:
-            pass
-        except KeyError:
-            pass
-
+        self.clean_settings()
         config = {
             "SECURENATIVE_TIMEOUT": "1500",
             "SECURENATIVE_UNKNOWN_KEY": "SOME_UNKNOWN_KEY"
@@ -105,22 +97,7 @@ class ConfigurationManagerTest(unittest.TestCase):
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_handle_invalid_config_file(self):
-        try:
-            os.remove(self.config_file_path)
-            del os.environ["SECURENATIVE_API_KEY"]
-            del os.environ["SECURENATIVE_API_URL"]
-            del os.environ["SECURENATIVE_INTERVAL"]
-            del os.environ["SECURENATIVE_MAX_EVENTS"]
-            del os.environ["SECURENATIVE_TIMEOUT"]
-            del os.environ["SECURENATIVE_AUTO_SEND"]
-            del os.environ["SECURENATIVE_DISABLE"]
-            del os.environ["SECURENATIVE_LOG_LEVEL"]
-            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
-        except FileNotFoundError:
-            pass
-        except KeyError:
-            pass
-
+        self.clean_settings()
         config = {"bla": "bla"}
 
         self.create_ini_file(config)
@@ -130,27 +107,12 @@ class ConfigurationManagerTest(unittest.TestCase):
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def ignore_invalid_config_file_entries(self):
-        try:
-            os.remove(self.config_file_path)
-            del os.environ["SECURENATIVE_API_KEY"]
-            del os.environ["SECURENATIVE_API_URL"]
-            del os.environ["SECURENATIVE_INTERVAL"]
-            del os.environ["SECURENATIVE_MAX_EVENTS"]
-            del os.environ["SECURENATIVE_TIMEOUT"]
-            del os.environ["SECURENATIVE_AUTO_SEND"]
-            del os.environ["SECURENATIVE_DISABLE"]
-            del os.environ["SECURENATIVE_LOG_LEVEL"]
-            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
-        except FileNotFoundError:
-            pass
-        except KeyError:
-            pass
-
+        self.clean_settings()
         config = {
             "SECURENATIVE_API_KEY": 1,
             "SECURENATIVE_API_URL": 3,
             "SECURENATIVE_TIMEOUT": "bad timeout",
-            "SECURENATIVE_FAILOVER_STRATEGY": "fail-what"
+            "SECURENATIVE_FAILOVER_STRATEGY": "fail-what",
         }
 
         self.create_ini_file(config)
@@ -161,22 +123,7 @@ class ConfigurationManagerTest(unittest.TestCase):
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_load_default_config(self):
-        try:
-            os.remove(self.config_file_path)
-            del os.environ["SECURENATIVE_API_KEY"]
-            del os.environ["SECURENATIVE_API_URL"]
-            del os.environ["SECURENATIVE_INTERVAL"]
-            del os.environ["SECURENATIVE_MAX_EVENTS"]
-            del os.environ["SECURENATIVE_TIMEOUT"]
-            del os.environ["SECURENATIVE_AUTO_SEND"]
-            del os.environ["SECURENATIVE_DISABLE"]
-            del os.environ["SECURENATIVE_LOG_LEVEL"]
-            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
-        except FileNotFoundError:
-            pass
-        except KeyError:
-            pass
-
+        self.clean_settings()
         options = ConfigurationManager.load_config(None)
 
         self.assertIsNotNone(options)
@@ -189,24 +136,11 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertEqual(str(options.disable), "False")
         self.assertEqual(options.log_level, "CRITICAL")
         self.assertEqual(options.fail_over_strategy, FailOverStrategy.FAIL_OPEN.value)
+        self.assertEqual(len(options.proxy_headers), 0)
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_get_config_from_env_variables(self):
-        try:
-            os.remove(self.config_file_path)
-            del os.environ["SECURENATIVE_API_KEY"]
-            del os.environ["SECURENATIVE_API_URL"]
-            del os.environ["SECURENATIVE_INTERVAL"]
-            del os.environ["SECURENATIVE_MAX_EVENTS"]
-            del os.environ["SECURENATIVE_TIMEOUT"]
-            del os.environ["SECURENATIVE_AUTO_SEND"]
-            del os.environ["SECURENATIVE_DISABLE"]
-            del os.environ["SECURENATIVE_LOG_LEVEL"]
-            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
-        except FileNotFoundError:
-            pass
-        except KeyError:
-            pass
+        self.clean_settings()
 
         os.environ["SECURENATIVE_API_KEY"] = "SOME_ENV_API_KEY"
         os.environ["SECURENATIVE_API_URL"] = "SOME_API_URL"
@@ -217,6 +151,7 @@ class ConfigurationManagerTest(unittest.TestCase):
         os.environ["SECURENATIVE_DISABLE"] = "True"
         os.environ["SECURENATIVE_LOG_LEVEL"] = "Debug"
         os.environ["SECURENATIVE_FAILOVER_STRATEGY"] = "fail-closed"
+        os.environ["SECURENATIVE_PROXY_HEADERS"] = "CF-Connecting-IP"
 
         options = ConfigurationManager.load_config(None)
 
@@ -229,25 +164,11 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertEqual(options.disable, "True")
         self.assertEqual(options.log_level, "Debug")
         self.assertEqual(options.fail_over_strategy, FailOverStrategy.FAIL_CLOSED.value)
+        self.assertEqual(options.proxy_headers, "CF-Connecting-IP")
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_default_values_for_invalid_enum_config_props(self):
-        try:
-            os.remove(self.config_file_path)
-            del os.environ["SECURENATIVE_API_KEY"]
-            del os.environ["SECURENATIVE_API_URL"]
-            del os.environ["SECURENATIVE_INTERVAL"]
-            del os.environ["SECURENATIVE_MAX_EVENTS"]
-            del os.environ["SECURENATIVE_TIMEOUT"]
-            del os.environ["SECURENATIVE_AUTO_SEND"]
-            del os.environ["SECURENATIVE_DISABLE"]
-            del os.environ["SECURENATIVE_LOG_LEVEL"]
-            del os.environ["SECURENATIVE_FAILOVER_STRATEGY"]
-        except FileNotFoundError:
-            pass
-        except KeyError:
-            pass
-
+        self.clean_settings()
         config = {
             "SECURENATIVE_FAILOVER_STRATEGY": "fail-something"
         }

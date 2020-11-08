@@ -50,7 +50,7 @@ class ApiManagerTest(unittest.TestCase):
 
     @responses.activate
     def test_should_timeout_on_post(self):
-        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, timeout=0,
+        options = SecureNativeOptions(api_key="YOUR_API_KEY", auto_send=True, timeout=0.000001,
                                       api_url="https://api.securenative-stg.com/collector/api/v1")
 
         responses.add(responses.POST, "https://api.securenative-stg.com/collector/api/v1/verify",
