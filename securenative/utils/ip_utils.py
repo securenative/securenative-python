@@ -1,6 +1,6 @@
 import ipaddress
 import re
-import socket
+from IPy import IP
 
 
 class IpUtils(object):
@@ -19,12 +19,12 @@ class IpUtils(object):
     def is_valid_public_ip(ip_address):
         ip = ipaddress.ip_address(ip_address)
 
-        if ip is ipaddress.IPv4Address:
-            if not ip.is_loopback and not ip.is_reserved and not ip.is_unspecified:
+        if ip.version is 4:
+            if not ip.is_loopback and not ip.is_reserved and not ip.is_unspecified and IP(ip_address).iptype() is not "PRIVATE":
                 return True
             return False
 
-        if not ip.is_unspecified:
+        if not ip.is_unspecified and IP(ip_address).iptype() is not "PRIVATE":
             return True
         return False
 
