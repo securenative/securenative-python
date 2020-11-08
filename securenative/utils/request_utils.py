@@ -4,7 +4,7 @@ from securenative.utils.ip_utils import IpUtils
 class RequestUtils(object):
     SECURENATIVE_COOKIE = "_sn"
     SECURENATIVE_HEADER = "x-securenative"
-    IP_HEADERS = ["x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"]
+    IP_HEADERS = ["HTTP_X_FORWARDED_FOR", "X_FORWARDED_FOR", "REMOTE_ADDR", "x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"]
 
     @staticmethod
     def get_secure_header_from_request(headers):
@@ -34,17 +34,19 @@ class RequestUtils(object):
 
         for header in RequestUtils.IP_HEADERS:
             try:
-                ips = request.headers[header].split(',')
+                ips = request.headers.get(header).split(',')
                 return RequestUtils.get_valid_ip(ips)
             except Exception:
                 continue
 
-        try:
-            for header in RequestUtils.IP_HEADERS:
-                ips = request.META.get[header].split(',')
+        for header in RequestUtils.IP_HEADERS:
+            try:
+                ips = request.META.get(header).split(',')
                 return RequestUtils.get_valid_ip(ips)
-        except Exception:
-            return ""
+            except Exception:
+                continue
+
+        return ""
 
     @staticmethod
     def get_remote_ip_from_request(request):
