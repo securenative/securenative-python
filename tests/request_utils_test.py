@@ -340,6 +340,6 @@ class RequestUtilsTest(unittest.TestCase):
         self.assertEqual(h.get('access_token'), None)
         self.assertEqual(h.get('apikey'), None)
         self.assertEqual(h.get('password'), None)
-        self.assertEqual(h.get('passwd]'), None)
+        self.assertEqual(h.get('passwd'), None)
         self.assertEqual(h.get('secret'), None)
         self.assertEqual(h.get('api_key'), None)
