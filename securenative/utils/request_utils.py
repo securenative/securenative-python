@@ -82,7 +82,7 @@ class RequestUtils(object):
     def get_headers_from_request(headers):
         h = {}
         for header in headers:
-            if header not in RequestUtils.PII_HEADERS:
+            if header not in RequestUtils.PII_HEADERS and header.upper() not in RequestUtils.PII_HEADERS:
                 h[header] = headers[header]
 
         return h
