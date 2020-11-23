@@ -21,7 +21,7 @@ class SecureNativeContext(object):
             client_token = None
 
         try:
-            headers = dict(request.headers)
+            headers = RequestUtils.get_headers_from_request(request.headers)
         except Exception:
             headers = None
 

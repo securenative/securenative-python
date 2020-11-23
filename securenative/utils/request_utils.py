@@ -5,6 +5,7 @@ class RequestUtils(object):
     SECURENATIVE_COOKIE = "_sn"
     SECURENATIVE_HEADER = "x-securenative"
     IP_HEADERS = ["HTTP_X_FORWARDED_FOR", "X_FORWARDED_FOR", "REMOTE_ADDR", "x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"]
+    PII_HEADERS = ['authorization', 'access_token', 'apikey', 'password',  'passwd', 'secret', 'api_key']
 
     @staticmethod
     def get_secure_header_from_request(headers):
@@ -76,3 +77,12 @@ class RequestUtils(object):
 
         if IpUtils.is_loop_back(ip):
             return ip
+
+    @staticmethod
+    def get_headers_from_request(headers):
+        h = {}
+        for header in headers:
+            if header not in RequestUtils.PII_HEADERS:
+                h[header] = headers[header]
+
+        return h

@@ -308,3 +308,38 @@ class RequestUtilsTest(unittest.TestCase):
         client_ip = RequestUtils.get_client_ip_from_request(request, options)
 
         self.assertEqual("203.0.113.1", client_ip)
+
+    def test_strip_down_pii_data_from_headers(self):
+        headers = {
+            'Host': 'net.example.com',
+            'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-us,en;q=0.5',
+            'Accept-Encoding': 'gzip,deflate',
+            'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+            'Keep-Alive': '300',
+            'Connection': 'keep-alive',
+            'Cookie': 'PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120',
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache',
+            'authorization': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'access_token': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'apikey': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'password': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'passwd': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'secret': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'api_key': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z'
+        }
+
+        with requests_mock.Mocker(real_http=True) as request:
+            request.headers = headers
+
+        h = RequestUtils.get_headers_from_request(request.headers)
+
+        self.assertEqual(h.get('authorization'), None)
+        self.assertEqual(h.get('access_token'), None)
+        self.assertEqual(h.get('apikey'), None)
+        self.assertEqual(h.get('password'), None)
+        self.assertEqual(h.get('passwd]'), None)
+        self.assertEqual(h.get('secret'), None)
+        self.assertEqual(h.get('api_key'), None)
