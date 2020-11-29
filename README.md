@@ -198,7 +198,7 @@ securenative = SecureNative.init_with_options(options)
 
 ## Remove PII Data From Headers
 
-By default SecureNative SDK remove any known pii headers from the received request.
+By default, SecureNative SDK remove any known pii headers from the received request.
 We also support using custom pii headers and regex matching via configuration, for example:
 
 ### Option 1: Using config file
