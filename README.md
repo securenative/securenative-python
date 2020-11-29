@@ -194,3 +194,28 @@ from securenative.config.securenative_options import SecureNativeOptions
 options = SecureNativeOptions(api_key="YOUR_API_KEY", max_events=10, log_level="ERROR", proxy_headers=['CF-Connecting-IP'])
 securenative = SecureNative.init_with_options(options)
 ```
+
+
+## Remove PII Data From Headers
+
+By default SecureNative SDK remove any known pii headers from the received request.
+We also support using custom pii headers and regex matching via configuration, for example:
+
+### Option 1: Using config file
+```ini
+SECURENATIVE_API_KEY: "YOUR_API_KEY"
+SECURENATIVE_PII_HEADERS: ["apiKey"]
+```
+
+Initialize sdk as shown above.
+
+### Options 2: Using ConfigurationBuilder
+
+```python
+from securenative.securenative import SecureNative
+from securenative.config.securenative_options import SecureNativeOptions
+
+
+options = SecureNativeOptions(api_key="YOUR_API_KEY", max_events=10, log_level="ERROR", pii_regex_pattern='((?i)(http_auth_)(\w+)?)')
+securenative = SecureNative.init_with_options(options)
+```
