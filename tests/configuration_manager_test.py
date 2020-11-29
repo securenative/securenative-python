@@ -63,7 +63,9 @@ class ConfigurationManagerTest(unittest.TestCase):
             "SECURENATIVE_DISABLE": "False",
             "SECURENATIVE_LOG_LEVEL": "Critical",
             "SECURENATIVE_FAILOVER_STRATEGY": "fail-closed",
-            "SECURENATIVE_PROXY_HEADERS": "CF-Connecting-IP,Some-Random-Ip"
+            "SECURENATIVE_PROXY_HEADERS": "CF-Connecting-IP,Some-Random-Ip",
+            "SECURENATIVE_PII_HEADERS": "authentication,api_key",
+            "SECURENATIVE_PII_REGEX_PATTERN": "/auth/i"
         }
 
         self.create_ini_file(config)
@@ -79,7 +81,9 @@ class ConfigurationManagerTest(unittest.TestCase):
         self.assertEqual(options.log_level, "Critical")
         self.assertEqual(options.max_events, "100")
         self.assertEqual(options.timeout, "1500")
+        self.assertEqual(options.pii_regex_pattern, "/auth/i")
         self.assertEqual(options.proxy_headers, ["CF-Connecting-IP", "Some-Random-Ip"])
+        self.assertEqual(options.pii_headers, ["authentication", "api_key"])
 
     @unittest.skipIf(platform.system() == "Windows" or platform.system() == "windows", "test not supported on windows")
     def test_ignore_unknown_config_in_properties_file(self):

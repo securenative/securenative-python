@@ -1,3 +1,5 @@
+import re
+
 from securenative.utils.ip_utils import IpUtils
 
 
@@ -5,6 +7,7 @@ class RequestUtils(object):
     SECURENATIVE_COOKIE = "_sn"
     SECURENATIVE_HEADER = "x-securenative"
     IP_HEADERS = ["HTTP_X_FORWARDED_FOR", "X_FORWARDED_FOR", "REMOTE_ADDR", "x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"]
+    PII_HEADERS = ['authorization', 'access_token', 'apikey', 'password',  'passwd', 'secret', 'api_key']
 
     @staticmethod
     def get_secure_header_from_request(headers):
@@ -15,7 +18,7 @@ class RequestUtils(object):
 
     @staticmethod
     def get_client_ip_from_request(request, options):
-        if options and len(options.proxy_headers) > 0:
+        if options and options.proxy_headers and len(options.proxy_headers) > 0:
             for header in options.proxy_headers:
                 try:
                     if request.environ.get(header) is not None:
@@ -76,3 +79,21 @@ class RequestUtils(object):
 
         if IpUtils.is_loop_back(ip):
             return ip
+
+    @staticmethod
+    def get_headers_from_request(headers, options=None):
+        h = {}
+        if options and options.pii_headers and len(options.pii_headers) > 0:
+            for header in headers:
+                if header not in options.pii_headers and header.upper() not in options.pii_headers:
+                    h[header] = headers[header]
+        elif options and options.pii_regex_pattern:
+            for header in headers:
+                if not re.search(options.pii_regex_pattern, header):
+                    h[header] = headers[header]
+        else:
+            for header in headers:
+                if header not in RequestUtils.PII_HEADERS and header.upper() not in RequestUtils.PII_HEADERS:
+                    h[header] = headers[header]
+
+        return h
