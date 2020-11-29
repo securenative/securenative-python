@@ -1,3 +1,5 @@
+import re
+
 from securenative.utils.ip_utils import IpUtils
 
 
@@ -16,7 +18,7 @@ class RequestUtils(object):
 
     @staticmethod
     def get_client_ip_from_request(request, options):
-        if options and len(options.proxy_headers) > 0:
+        if options and options.proxy_headers and len(options.proxy_headers) > 0:
             for header in options.proxy_headers:
                 try:
                     if request.environ.get(header) is not None:
@@ -79,10 +81,19 @@ class RequestUtils(object):
             return ip
 
     @staticmethod
-    def get_headers_from_request(headers):
+    def get_headers_from_request(headers, options=None):
         h = {}
-        for header in headers:
-            if header not in RequestUtils.PII_HEADERS and header.upper() not in RequestUtils.PII_HEADERS:
-                h[header] = headers[header]
+        if options and options.pii_headers and len(options.pii_headers) > 0:
+            for header in headers:
+                if header not in options.pii_headers and header.upper() not in options.pii_headers:
+                    h[header] = headers[header]
+        elif options and options.pii_regex_pattern:
+            for header in headers:
+                if not re.search(options.pii_regex_pattern, header):
+                    h[header] = headers[header]
+        else:
+            for header in headers:
+                if header not in RequestUtils.PII_HEADERS and header.upper() not in RequestUtils.PII_HEADERS:
+                    h[header] = headers[header]
 
         return h

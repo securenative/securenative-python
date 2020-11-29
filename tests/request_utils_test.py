@@ -343,3 +343,76 @@ class RequestUtilsTest(unittest.TestCase):
         self.assertEqual(h.get('passwd'), None)
         self.assertEqual(h.get('secret'), None)
         self.assertEqual(h.get('api_key'), None)
+
+    def test_strip_down_pii_data_from_custom_headers(self):
+        headers = {
+            'Host': 'net.example.com',
+            'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-us,en;q=0.5',
+            'Accept-Encoding': 'gzip,deflate',
+            'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+            'Keep-Alive': '300',
+            'Connection': 'keep-alive',
+            'Cookie': 'PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120',
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache',
+            'authorization': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'access_token': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'apikey': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'password': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'passwd': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'secret': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'api_key': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z'
+        }
+
+        with requests_mock.Mocker(real_http=True) as request:
+            request.headers = headers
+
+        options = SecureNativeOptions(pii_headers=['authorization', 'access_token', 'apikey', 'password',
+                                                   'passwd', 'secret', 'api_key'])
+        h = RequestUtils.get_headers_from_request(request.headers, options)
+
+        self.assertEqual(h.get('authorization'), None)
+        self.assertEqual(h.get('access_token'), None)
+        self.assertEqual(h.get('apikey'), None)
+        self.assertEqual(h.get('password'), None)
+        self.assertEqual(h.get('passwd'), None)
+        self.assertEqual(h.get('secret'), None)
+        self.assertEqual(h.get('api_key'), None)
+
+    def test_strip_down_pii_data_from_regex_pattern(self):
+        headers = {
+            'Host': 'net.example.com',
+            'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.5) Gecko/20091102 Firefox/3.5.5 (.NET CLR 3.5.30729)',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-us,en;q=0.5',
+            'Accept-Encoding': 'gzip,deflate',
+            'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+            'Keep-Alive': '300',
+            'Connection': 'keep-alive',
+            'Cookie': 'PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120',
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache',
+            'http_auth_authorization': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'http_auth_access_token': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'http_auth_apikey': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'http_auth_password': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'http_auth_passwd': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'http_auth_secret': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z',
+            'http_auth_api_key': 'ylSkZIjbdWybfs4fUQe9BqP0LH5Z'
+        }
+
+        with requests_mock.Mocker(real_http=True) as request:
+            request.headers = headers
+
+        options = SecureNativeOptions(pii_regex_pattern='((?i)(http_auth_)(\w+)?)')
+        h = RequestUtils.get_headers_from_request(request.headers, options)
+
+        self.assertEqual(h.get('http_auth_authorization'), None)
+        self.assertEqual(h.get('http_auth_access_token'), None)
+        self.assertEqual(h.get('http_auth_apikey'), None)
+        self.assertEqual(h.get('http_auth_password'), None)
+        self.assertEqual(h.get('http_auth_passwd'), None)
+        self.assertEqual(h.get('http_auth_secret'), None)
+        self.assertEqual(h.get('http_auth_api_key'), None)

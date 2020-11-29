@@ -69,4 +69,9 @@ class ConfigurationManager(object):
                                                                               "SECURENATIVE_FAILOVER_STRATEGY",
                                                                               options.fail_over_strategy),
                                    proxy_headers=cls._get_env_or_default(properties, "SECURENATIVE_PROXY_HEADERS",
-                                                                         options.proxy_headers))
+                                                                         options.proxy_headers),
+                                   pii_headers=cls._get_env_or_default(properties, "SECURENATIVE_PII_HEADERS",
+                                                                       options.pii_headers),
+                                   pii_regex_pattern=cls._get_env_or_default(properties,
+                                                                             "SECURENATIVE_PII_REGEX_PATTERN",
+                                                                             options.pii_regex_pattern))
