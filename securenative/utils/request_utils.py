@@ -85,7 +85,7 @@ class RequestUtils(object):
         h = {}
         if options and options.pii_headers and len(options.pii_headers) > 0:
             for header in headers:
-                if header not in options.pii_headers and header.upper() not in options.pii_headers:
+                if header.lower() not in options.pii_headers and header.upper() not in options.pii_headers:
                     h[header] = headers[header]
         elif options and options.pii_regex_pattern:
             for header in headers:
@@ -93,7 +93,7 @@ class RequestUtils(object):
                     h[header] = headers[header]
         else:
             for header in headers:
-                if header not in RequestUtils.PII_HEADERS and header.upper() not in RequestUtils.PII_HEADERS:
+                if header.lower() not in RequestUtils.PII_HEADERS and header.upper() not in RequestUtils.PII_HEADERS:
                     h[header] = headers[header]
 
         return h
